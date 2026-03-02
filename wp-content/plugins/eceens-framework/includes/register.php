@@ -55,7 +55,7 @@ function eceens_register_post_types() {
 
 function eceens_register_taxonomies() {
 
-    /* ── FAQ Categorie ───────────────────────────────────── */
+    /* ── FAQ Categorie (hierarchical with sub-categories) ── */
     register_taxonomy( 'faq_categorie', 'faq', [
         'labels' => [
             'name'          => 'FAQ Categorieën',
@@ -65,29 +65,14 @@ function eceens_register_taxonomies() {
             'search_items'  => 'FAQ Categorie zoeken',
             'all_items'     => 'Alle FAQ Categorieën',
         ],
-        'hierarchical' => true,
-        'public'       => true,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'faq-categorie' ],
+        'hierarchical'      => true,
+        'public'            => true,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'rewrite'           => [ 'slug' => 'faq-categorie' ],
     ]);
 
-    /* ── FAQ Sub-categorie ───────────────────────────────── */
-    register_taxonomy( 'faq_subcategorie', 'faq', [
-        'labels' => [
-            'name'          => 'FAQ Sub-categorieën',
-            'singular_name' => 'FAQ Sub-categorie',
-            'add_new_item'  => 'Nieuwe FAQ Sub-categorie',
-            'edit_item'     => 'FAQ Sub-categorie bewerken',
-            'search_items'  => 'FAQ Sub-categorie zoeken',
-            'all_items'     => 'Alle FAQ Sub-categorieën',
-        ],
-        'hierarchical' => true,
-        'public'       => true,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'faq-subcategorie' ],
-    ]);
-
-    /* ── Content Categorie ───────────────────────────────── */
+    /* ── Content Categorie (hierarchical with sub-categories) */
     register_taxonomy( 'content_categorie', 'content', [
         'labels' => [
             'name'          => 'Content Categorieën',
@@ -97,25 +82,10 @@ function eceens_register_taxonomies() {
             'search_items'  => 'Content Categorie zoeken',
             'all_items'     => 'Alle Content Categorieën',
         ],
-        'hierarchical' => true,
-        'public'       => true,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'content-categorie' ],
-    ]);
-
-    /* ── Content Sub-categorie ───────────────────────────── */
-    register_taxonomy( 'content_subcategorie', 'content', [
-        'labels' => [
-            'name'          => 'Content Sub-categorieën',
-            'singular_name' => 'Content Sub-categorie',
-            'add_new_item'  => 'Nieuwe Content Sub-categorie',
-            'edit_item'     => 'Content Sub-categorie bewerken',
-            'search_items'  => 'Content Sub-categorie zoeken',
-            'all_items'     => 'Alle Content Sub-categorieën',
-        ],
-        'hierarchical' => true,
-        'public'       => true,
-        'show_in_rest' => true,
-        'rewrite'      => [ 'slug' => 'content-subcategorie' ],
+        'hierarchical'      => true,
+        'public'            => true,
+        'show_in_rest'      => true,
+        'show_admin_column' => true,
+        'rewrite'           => [ 'slug' => 'content-categorie' ],
     ]);
 }

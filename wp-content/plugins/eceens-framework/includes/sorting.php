@@ -10,7 +10,7 @@ function eceens_default_sorting( $query ) {
         return;
     }
 
-    if ( $query->is_post_type_archive( 'faq' ) || $query->is_tax( 'faq_categorie' ) || $query->is_tax( 'faq_subcategorie' ) ) {
+    if ( $query->is_post_type_archive( 'faq' ) || $query->is_tax( 'faq_categorie' ) ) {
         $query->set( 'meta_key', 'faq_priority' );
         $query->set( 'orderby', [
             'meta_value_num' => 'ASC',
@@ -19,7 +19,7 @@ function eceens_default_sorting( $query ) {
         return;
     }
 
-    if ( $query->is_post_type_archive( 'content' ) || $query->is_tax( 'content_categorie' ) || $query->is_tax( 'content_subcategorie' ) ) {
+    if ( $query->is_post_type_archive( 'content' ) || $query->is_tax( 'content_categorie' ) ) {
         $query->set( 'meta_key', 'content_priority' );
         $query->set( 'orderby', [
             'meta_value_num' => 'ASC',
