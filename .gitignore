@@ -1,0 +1,72 @@
+# ============================================================
+# WordPress .gitignore — Eceens
+# Track only custom code, ignore core + vendor + uploads
+# ============================================================
+
+# --- WordPress core ---
+/wp-admin/
+/wp-includes/
+/wp-*.php
+/index.php
+/license.txt
+/readme.html
+/xmlrpc.php
+/.htaccess
+/.htaccess.bk
+/local-xdebuginfo.php
+
+# --- wp-config (contains credentials) ---
+wp-config.php
+wp-config-sample.php
+
+# --- wp-content root files ---
+/wp-content/index.php
+
+# --- Uploads (media, user content) ---
+/wp-content/uploads/
+
+# --- Upgrade dirs ---
+/wp-content/upgrade/
+/wp-content/upgrade-temp-backup/
+
+# --- Cache directories ---
+/wp-content/cache/
+/wp-content/litespeed/
+/wp-content/advanced-cache.php
+/wp-content/object-cache.php
+/wp-content/db.php
+
+# --- Third-party plugins (install via WP/composer) ---
+/wp-content/plugins/*
+# Track our custom plugin
+!/wp-content/plugins/eceens-framework/
+
+# --- Third-party themes ---
+/wp-content/themes/*
+# Track the active/child theme
+!/wp-content/themes/hello-elementor/
+
+# --- Must-use plugins (if any) ---
+# /wp-content/mu-plugins/
+
+# --- Languages (downloadable) ---
+/wp-content/languages/
+
+# --- OS / IDE ---
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+*.code-workspace
+
+# --- Node / Build ---
+node_modules/
+package-lock.json
+yarn.lock
+
+# --- Local by Flywheel ---
+/local-xdebuginfo.php
