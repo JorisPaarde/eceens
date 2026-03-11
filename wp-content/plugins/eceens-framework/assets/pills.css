@@ -23,3 +23,72 @@
 .eceens-category-pills {
     display: contents;
 }
+
+.eceens-category-label {
+    display: inline-block;
+    padding: 10px 24px;
+    border-radius: 10px;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+/* Speech bubble: add "eceens-bubble" to any Elementor container.
+   Two stacked CSS-border triangles: outer (border color) + inner (fill color).
+   When no border: both use background color → same size, solid arrow.
+*/
+.eceens-bubble {
+    position: relative;
+}
+
+.eceens-bubble::after,
+.eceens-bubble::before {
+    content: '' !important;
+    position: absolute !important;
+    display: block !important;
+    top: auto !important;
+    right: auto !important;
+    width: 0 !important;
+    height: 0 !important;
+    border-style: solid !important;
+    background: none !important;
+    pointer-events: none;
+    transition: none !important;
+    transform: none !important;
+    opacity: 1 !important;
+    border-radius: 0 !important;
+}
+
+/* Outer triangle — border color, full size */
+.eceens-bubble::after {
+    bottom: -20px !important;
+    left: 60px !important;
+    border-width: 20px 40px 0 0 !important;
+    border-color: var(--eceens-bubble-color, currentColor) transparent transparent transparent !important;
+    z-index: 1 !important;
+}
+
+/* Inner triangle — fill color, uniform border thickness on all edges */
+.eceens-bubble::before {
+    bottom: calc(-20px + var(--eceens-bubble-width, 0px) * 1.618) !important;
+    left: calc(60px + var(--eceens-bubble-width, 0px)) !important;
+    border-width: calc(20px - var(--eceens-bubble-width, 0px) * 1.618) calc(40px - var(--eceens-bubble-width, 0px) * 3.236) 0 0 !important;
+    border-color: var(--eceens-bubble-fill, #fff) transparent transparent transparent !important;
+    z-index: 2 !important;
+}
+
+/* Center position */
+.eceens-bubble-center::after { left: 50% !important; }
+.eceens-bubble-center::before { left: calc(50% + var(--eceens-bubble-width, 0px)) !important; }
+
+/* Right position (mirrored) */
+.eceens-bubble-right::after {
+    left: auto !important;
+    right: 60px !important;
+    border-width: 20px 0 0 40px !important;
+}
+
+.eceens-bubble-right::before {
+    left: auto !important;
+    right: calc(60px + var(--eceens-bubble-width, 0px)) !important;
+    border-width: calc(20px - var(--eceens-bubble-width, 0px) * 1.618) 0 0 calc(40px - var(--eceens-bubble-width, 0px) * 3.236) !important;
+}

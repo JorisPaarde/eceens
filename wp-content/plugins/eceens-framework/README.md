@@ -68,8 +68,12 @@ Gebruik deze in een **Loop Grid** widget onder Query > Query ID.
 | `eceens_content_featured`          | Featured Content             | 6         |
 | `eceens_homepage_faq_featured`     | Featured FAQ's (homepage)    | 3         |
 | `eceens_homepage_content_featured` | Featured Content (homepage)  | 3         |
+| `eceens_faq_current_category`      | FAQ's van huidige categorie  | alle      |
+| `eceens_content_current_category`  | Content van huidige categorie| alle      |
 
-Alleen items met het **Featured** veld aangevinkt worden getoond, gesorteerd op prioriteit.
+Featured Query IDs tonen alleen items met het **Featured** veld aangevinkt, gesorteerd op prioriteit.
+
+De "current category" Query IDs lezen automatisch de categorie uit de URL. Gebruik deze op taxonomy archive templates.
 
 ---
 
@@ -149,6 +153,69 @@ Gebruik dit in een **Shortcode widget** binnen een Elementor Loop Item template.
 ```
 
 Toont alle top-level FAQ-categorieën. Met `link="anchor"` linken de pills naar `#faq-cat-{id}` voor ankernavigatie op dezelfde pagina.
+
+---
+
+### Huidige categorie info (voor archive pagina's)
+
+Op taxonomy archive pagina's (`/faq-categorie/gezondheid-omgeving/`) kun je de categorie-informatie tonen:
+
+**Categorie naam:**
+```
+[eceens_current_category_name]
+[eceens_current_category_name tag="h2"]
+[eceens_current_category_name color="yes"]
+[eceens_current_category_name tag="h1" color="yes"]
+```
+
+Met `color="yes"` krijgt de naam een gekleurde achtergrond (categorie-kleur). Met `tag="h2"` wordt het in een heading gewrapt.
+
+**Categorie beschrijving:**
+```
+[eceens_current_category_description]
+```
+
+Toont de beschrijving die je bij de categorie hebt ingevuld in WP Admin. Output zit in een `<div class="eceens-current-category-description">` die je kunt stylen.
+
+**Categorie kleur op containers:**
+```
+[eceens_current_category_color]
+```
+
+Plaats dit **eenmaal** op de pagina (bijv. in een HTML widget bovenaan). Het injecteert CSS variabelen en klasses die je op elke container kunt gebruiken:
+
+| CSS klasse         | Wat het doet                              |
+|--------------------|-------------------------------------------|
+| `eceens-cat-bg`    | Achtergrondkleur = categorie kleur        |
+| `eceens-cat-text`  | Tekstkleur = categorie kleur              |
+| `eceens-cat-border`| Randkleur = categorie kleur               |
+
+Voeg de klasse toe bij een Elementor container onder **Geavanceerd > CSS-klassen**.
+
+Je kunt ook de CSS variabelen gebruiken in Custom CSS:
+```css
+selector {
+    background: var(--eceens-cat-color);
+    color: var(--eceens-cat-text);
+}
+```
+
+---
+
+## Speech bubble (pijltje onder container)
+
+Voeg de CSS klasse `eceens-bubble` toe aan een Elementor container (Geavanceerd > CSS-klassen). Het pijltje krijgt automatisch dezelfde kleur als de achtergrond van de container.
+
+| Klasse                 | Pijltje positie     |
+|------------------------|---------------------|
+| `eceens-bubble`        | Links (standaard)   |
+| `eceens-bubble eceens-bubble-center` | Midden   |
+| `eceens-bubble eceens-bubble-right`  | Rechts   |
+
+Combineer met `eceens-cat-bg` voor de categorie-kleur:
+```
+CSS klassen: eceens-cat-bg eceens-bubble eceens-bubble-center
+```
 
 ---
 

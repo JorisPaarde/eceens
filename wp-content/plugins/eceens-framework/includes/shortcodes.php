@@ -6,6 +6,9 @@ if ( ! defined( 'ABSPATH' ) ) {
 add_shortcode( 'eceens_faq_category_pills', 'eceens_faq_category_pills_shortcode' );
 add_shortcode( 'eceens_post_category_pills', 'eceens_post_category_pills_shortcode' );
 add_shortcode( 'eceens_category_pills', 'eceens_category_pills_shortcode' );
+add_shortcode( 'eceens_current_category_name', 'eceens_current_category_name_shortcode' );
+add_shortcode( 'eceens_current_category_description', 'eceens_current_category_description_shortcode' );
+add_shortcode( 'eceens_current_category_color', 'eceens_current_category_color_shortcode' );
 
 /**
  * Capture the real post ID/type each time WordPress sets up a loop post.
@@ -332,6 +335,88 @@ function eceens_category_pills_shortcode( $atts ) {
 
     $out .= '</div>';
     return $out;
+}
+
+/**
+ * Output the current category name on taxonomy archive pages.
+ *
+ * [eceens_current_category_name]
+ * [eceens_current_category_name tag="h2"]
+ * [eceens_current_category_name tag="span" color="yes"]
+ */
+function eceens_current_category_name_shortcode( $atts ) {
+    $atts = shortcode_atts( [
+        'tag'   => '',
+        'color' => 'no',
+    ], $atts, 'eceens_current_category_name' );
+
+    $term = get_queried_object();
+    if ( ! $term || ! isset( $term->taxonomy ) ) {
+        return '';
+    }
+
+    $name = esc_html( $term->name );
+
+    if ( $atts['color'] === 'yes' ) {
+        $color      = eceens_get_term_color( $term );
+        $text_color = eceens_contrast_color( $color );
+        $style      = sprintf( 'background:%s;color:%s', esc_attr( $color ), esc_attr( $text_color ) );
+        $name       = sprintf( '<span class="eceens-category-label" style="%s">%s</span>', $style, $name );
+    }
+
+    if ( $atts['tag'] ) {
+        $tag = sanitize_key( $atts['tag'] );
+        return sprintf( '<%s class="eceens-current-category-name">%s</%s>', $tag, $name, $tag );
+    }
+
+    return $name;
+}
+
+/**
+ * Output the current category description on taxonomy archive pages.
+ *
+ * [eceens_current_category_description]
+ */
+function eceens_current_category_description_shortcode( $atts ) {
+    $term = get_queried_object();
+    if ( ! $term || ! isset( $term->taxonomy ) || empty( $term->description ) ) {
+        return '';
+    }
+
+    return '<div class="eceens-current-category-description">' . wp_kses_post( $term->description ) . '</div>';
+}
+
+/**
+ * Inject CSS variable and helper classes for the current category color.
+ *
+ * [eceens_current_category_color]
+ *
+ * Place once on the page. Outputs:
+ * - CSS variable --eceens-cat-color on :root
+ * - CSS variable --eceens-cat-text on :root (contrast text color)
+ * - .eceens-cat-bg { background: var(--eceens-cat-color); color: var(--eceens-cat-text); }
+ * - .eceens-cat-text { color: var(--eceens-cat-color); }
+ * - .eceens-cat-border { border-color: var(--eceens-cat-color); }
+ */
+function eceens_current_category_color_shortcode( $atts ) {
+    $term = get_queried_object();
+    if ( ! $term || ! isset( $term->taxonomy ) ) {
+        return '';
+    }
+
+    $color      = eceens_get_term_color( $term );
+    $text_color = eceens_contrast_color( $color );
+
+    return sprintf(
+        '<style>'
+        . ':root{--eceens-cat-color:%s;--eceens-cat-text:%s}'
+        . '.eceens-cat-bg{background:var(--eceens-cat-color)!important;color:var(--eceens-cat-text)!important}'
+        . '.eceens-cat-text{color:var(--eceens-cat-color)!important}'
+        . '.eceens-cat-border{border-color:var(--eceens-cat-color)!important}'
+        . '</style>',
+        esc_attr( $color ),
+        esc_attr( $text_color )
+    );
 }
 
 function eceens_enqueue_pill_css() {

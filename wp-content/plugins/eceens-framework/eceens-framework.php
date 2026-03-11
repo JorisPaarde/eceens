@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Eceens Framework
  * Description: Custom Post Types, taxonomies, meta boxes, sorting, Elementor helpers and shortcodes for Eceens.
- * Version:     1.5.0
+ * Version:     1.6.0
  * Author:      Eceens
  * Text Domain: eceens-framework
  * Requires at least: 6.0
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'ECEENS_FW_VERSION', '1.5.0' );
+define( 'ECEENS_FW_VERSION', '1.6.0' );
 define( 'ECEENS_FW_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ECEENS_FW_URL', plugin_dir_url( __FILE__ ) );
 
@@ -43,6 +43,36 @@ add_action( 'wp_enqueue_scripts', function () {
         );
     }
 });
+
+add_action( 'wp_footer', function () {
+    ?>
+    <script>
+    document.querySelectorAll('.eceens-bubble').forEach(function(el){
+        var s = getComputedStyle(el);
+        var border = '', bw = 0;
+        ['Bottom','Left','Right','Top'].some(function(side){
+            var w = parseInt(s['border'+side+'Width']) || 0;
+            var c = s['border'+side+'Color'];
+            if(w > 0 && c && c !== 'rgba(0, 0, 0, 0)'){
+                border = c; bw = w; return true;
+            }
+        });
+        var bg = s.backgroundColor;
+        if(bw > 0 && border){
+            el.style.setProperty('--eceens-bubble-color', border);
+            el.style.setProperty('--eceens-bubble-width', bw + 'px');
+            if(bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent'){
+                el.style.setProperty('--eceens-bubble-fill', bg);
+            }
+        } else if(bg && bg !== 'rgba(0, 0, 0, 0)' && bg !== 'transparent'){
+            el.style.setProperty('--eceens-bubble-color', bg);
+            el.style.setProperty('--eceens-bubble-fill', bg);
+            el.style.setProperty('--eceens-bubble-width', '0px');
+        }
+    });
+    </script>
+    <?php
+}, 99 );
 
 add_action( 'wp_footer', function () {
     if ( eceens_is_faq_page() ) {
