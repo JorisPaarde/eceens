@@ -46,12 +46,13 @@ function eceens_add_meta_boxes() {
 function eceens_render_meta_fields( $post, $prefix ) {
     wp_nonce_field( "eceens_{$prefix}_nonce_action", "eceens_{$prefix}_nonce" );
 
-    $teaser     = get_post_meta( $post->ID, "{$prefix}_teaser", true );
-    $featured   = get_post_meta( $post->ID, "{$prefix}_featured", true );
-    $priority   = get_post_meta( $post->ID, "{$prefix}_priority", true );
-    $manual     = get_post_meta( $post->ID, "{$prefix}_manual_title", true );
-    $image_id   = get_post_meta( $post->ID, "{$prefix}_media_image_id", true );
-    $video_url  = get_post_meta( $post->ID, "{$prefix}_media_video_url", true );
+    $teaser          = get_post_meta( $post->ID, "{$prefix}_teaser", true );
+    $featured        = get_post_meta( $post->ID, "{$prefix}_featured", true );
+    $homepage_featured = get_post_meta( $post->ID, "{$prefix}_homepage_featured", true );
+    $priority        = get_post_meta( $post->ID, "{$prefix}_priority", true );
+    $manual          = get_post_meta( $post->ID, "{$prefix}_manual_title", true );
+    $image_id        = get_post_meta( $post->ID, "{$prefix}_media_image_id", true );
+    $video_url       = get_post_meta( $post->ID, "{$prefix}_media_video_url", true );
 
     $image_url  = $image_id ? wp_get_attachment_image_url( (int) $image_id, 'thumbnail' ) : '';
     ?>
@@ -67,6 +68,12 @@ function eceens_render_meta_fields( $post, $prefix ) {
             <td><input type="checkbox" id="<?php echo esc_attr( $prefix ); ?>_featured"
                        name="<?php echo esc_attr( $prefix ); ?>_featured"
                        value="1" <?php checked( $featured, '1' ); ?> /></td>
+        </tr>
+        <tr>
+            <th><label for="<?php echo esc_attr( $prefix ); ?>_homepage_featured">Homepage Featured</label></th>
+            <td><input type="checkbox" id="<?php echo esc_attr( $prefix ); ?>_homepage_featured"
+                       name="<?php echo esc_attr( $prefix ); ?>_homepage_featured"
+                       value="1" <?php checked( $homepage_featured, '1' ); ?> /></td>
         </tr>
         <tr>
             <th><label for="<?php echo esc_attr( $prefix ); ?>_priority">Prioriteit</label></th>
@@ -169,9 +176,10 @@ function eceens_save_meta( $post_id, $post, $prefix ) {
     }
 
     $fields = [
-        "{$prefix}_teaser"          => 'text',
-        "{$prefix}_featured"        => 'checkbox',
-        "{$prefix}_priority"        => 'int',
+        "{$prefix}_teaser"             => 'text',
+        "{$prefix}_featured"           => 'checkbox',
+        "{$prefix}_homepage_featured"  => 'checkbox',
+        "{$prefix}_priority"           => 'int',
         "{$prefix}_manual_title"    => 'text',
         "{$prefix}_media_image_id"  => 'int',
         "{$prefix}_media_video_url" => 'url',

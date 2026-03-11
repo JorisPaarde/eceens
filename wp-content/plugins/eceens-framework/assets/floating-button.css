@@ -3,38 +3,44 @@
     bottom: 24px;
     right: 24px;
     z-index: 9999;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 14px 28px;
-    background: #2A50FF;
-    color: #fff;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1;
-    border-radius: 50px;
-    text-decoration: none;
-    box-shadow: 0 4px 14px rgba(42, 80, 255, .35);
-    transition: background .2s, box-shadow .2s, transform .15s;
+    opacity: 0;
+    transform: translateY(100vh);
+    animation: eceens-enter-bounce 2.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
 }
 
-.eceens-floating-btn:hover,
-.eceens-floating-btn:focus {
-    background: #1e3fd6;
-    color: #fff;
-    box-shadow: 0 6px 20px rgba(42, 80, 255, .45);
-    transform: translateY(-2px);
-}
-
-.eceens-floating-btn:active {
-    transform: translateY(0);
+@keyframes eceens-enter-bounce {
+    /* fade in up */
+    0% {
+        opacity: 0;
+        transform: translateY(100vh);
+    }
+    40% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    /* pause */
+    60% {
+        transform: translateY(0);
+    }
+    /* bounce */
+    70% {
+        transform: translateY(-16px);
+    }
+    80% {
+        transform: translateY(0);
+    }
+    90% {
+        transform: translateY(-6px);
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (max-width: 600px) {
     .eceens-floating-btn {
         bottom: 16px;
         right: 16px;
-        padding: 12px 22px;
-        font-size: 14px;
     }
 }
