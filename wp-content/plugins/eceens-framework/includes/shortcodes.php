@@ -9,6 +9,7 @@ add_shortcode( 'eceens_category_pills', 'eceens_category_pills_shortcode' );
 add_shortcode( 'eceens_current_category_name', 'eceens_current_category_name_shortcode' );
 add_shortcode( 'eceens_current_category_description', 'eceens_current_category_description_shortcode' );
 add_shortcode( 'eceens_current_category_color', 'eceens_current_category_color_shortcode' );
+add_shortcode( 'eceens_category_loop', 'eceens_category_loop_shortcode' );
 
 /**
  * Capture the real post ID/type each time WordPress sets up a loop post.
@@ -338,9 +339,22 @@ function eceens_category_pills_shortcode( $atts ) {
 }
 
 /**
- * Output the current category name on taxonomy archive pages.
- *
+ * Get the current term: loop context first, then queried object.
+ */
+function eceens_get_current_term() {
+    if ( ! empty( $GLOBALS['eceens_current_term'] ) ) {
+        return $GLOBALS['eceens_current_term'];
+    }
+    $obj = get_queried_object();
+    if ( $obj && isset( $obj->taxonomy ) ) {
+        return $obj;
+    }
+    return null;
+}
+
+/**
  * [eceens_current_category_name]
+ * [eceens_current_category_name pill="yes"]  — pill met categoriekleur (voor in loop)
  * [eceens_current_category_name tag="h2"]
  * [eceens_current_category_name tag="span" color="yes"]
  */
@@ -348,20 +362,22 @@ function eceens_current_category_name_shortcode( $atts ) {
     $atts = shortcode_atts( [
         'tag'   => '',
         'color' => 'no',
+        'pill'  => 'no',
     ], $atts, 'eceens_current_category_name' );
 
-    $term = get_queried_object();
-    if ( ! $term || ! isset( $term->taxonomy ) ) {
+    $term = eceens_get_current_term();
+    if ( ! $term ) {
         return '';
     }
 
     $name = esc_html( $term->name );
+    $as_pill = ( $atts['color'] === 'yes' || $atts['pill'] === 'yes' );
 
-    if ( $atts['color'] === 'yes' ) {
+    if ( $as_pill ) {
         $color      = eceens_get_term_color( $term );
         $text_color = eceens_contrast_color( $color );
         $style      = sprintf( 'background:%s;color:%s', esc_attr( $color ), esc_attr( $text_color ) );
-        $name       = sprintf( '<span class="eceens-category-label" style="%s">%s</span>', $style, $name );
+        $name       = sprintf( '<span class="eceens-category-label eceens-current-category-pill" style="%s">%s</span>', $style, $name );
     }
 
     if ( $atts['tag'] ) {
@@ -373,39 +389,58 @@ function eceens_current_category_name_shortcode( $atts ) {
 }
 
 /**
- * Output the current category description on taxonomy archive pages.
- *
  * [eceens_current_category_description]
+ * [eceens_current_category_description class="mijn-klasse"]
  */
 function eceens_current_category_description_shortcode( $atts ) {
-    $term = get_queried_object();
-    if ( ! $term || ! isset( $term->taxonomy ) || empty( $term->description ) ) {
+    $atts = shortcode_atts( [
+        'class' => '',
+    ], $atts, 'eceens_current_category_description' );
+
+    $term = eceens_get_current_term();
+    if ( ! $term || empty( $term->description ) ) {
         return '';
     }
 
-    return '<div class="eceens-current-category-description">' . wp_kses_post( $term->description ) . '</div>';
+    $classes = array_merge(
+        [ 'eceens-current-category-description' ],
+        array_filter( array_map( 'sanitize_html_class', explode( ' ', $atts['class'] ) ) )
+    );
+
+    return '<div class="' . esc_attr( implode( ' ', $classes ) ) . '">' . wp_kses_post( $term->description ) . '</div>';
 }
 
 /**
- * Inject CSS variable and helper classes for the current category color.
- *
  * [eceens_current_category_color]
  *
- * Place once on the page. Outputs:
- * - CSS variable --eceens-cat-color on :root
- * - CSS variable --eceens-cat-text on :root (contrast text color)
- * - .eceens-cat-bg { background: var(--eceens-cat-color); color: var(--eceens-cat-text); }
- * - .eceens-cat-text { color: var(--eceens-cat-color); }
- * - .eceens-cat-border { border-color: var(--eceens-cat-color); }
+ * Injects CSS variables and helper classes for the current category color.
+ * In a loop context: scoped per card. On archive pages: scoped to :root.
  */
 function eceens_current_category_color_shortcode( $atts ) {
-    $term = get_queried_object();
-    if ( ! $term || ! isset( $term->taxonomy ) ) {
+    $term = eceens_get_current_term();
+    if ( ! $term ) {
         return '';
     }
 
     $color      = eceens_get_term_color( $term );
     $text_color = eceens_contrast_color( $color );
+
+    if ( ! empty( $GLOBALS['eceens_current_term'] ) ) {
+        static $color_instance = 0;
+        $color_instance++;
+        $id = 'eceens-lc-' . $color_instance;
+        return sprintf(
+            '<style>'
+            . '#%s{--eceens-cat-color:%s;--eceens-cat-text:%s}'
+            . '#%s .eceens-cat-bg{background:var(--eceens-cat-color)!important;color:var(--eceens-cat-text)!important}'
+            . '#%s .eceens-cat-text{color:var(--eceens-cat-color)!important}'
+            . '#%s .eceens-cat-border{border-color:var(--eceens-cat-color)!important}'
+            . '</style>'
+            . '<script>document.currentScript.parentElement.closest(".eceens-loop-card").id="%s"</script>',
+            $id, esc_attr( $color ), esc_attr( $text_color ),
+            $id, $id, $id, $id
+        );
+    }
 
     return sprintf(
         '<style>'
@@ -417,6 +452,122 @@ function eceens_current_category_color_shortcode( $atts ) {
         esc_attr( $color ),
         esc_attr( $text_color )
     );
+}
+
+/**
+ * [eceens_category_loop taxonomy="faq_categorie" columns="3" gap="20px"]
+ *
+ * Outputs a grid of category cards: pill (naam) + beschrijving. Geen Elementor-template,
+ * zodat editor en live identiek zijn. Styling via Elementor Custom CSS of .eceens-loop-card.
+ */
+function eceens_category_loop_shortcode( $atts ) {
+    static $loop_instance = 0;
+    $loop_instance++;
+
+    $atts = shortcode_atts( [
+        'taxonomy' => 'faq_categorie',
+        'columns'  => '3',
+        'gap'      => '20px',
+        'parent'   => '',
+        'orderby'  => 'name',
+        'order'    => 'ASC',
+        'link'     => 'yes',
+    ], $atts, 'eceens_category_loop' );
+
+    $taxonomy = sanitize_key( $atts['taxonomy'] );
+    $term_args_base = [
+        'taxonomy'   => $taxonomy,
+        'hide_empty' => false,
+        'orderby'    => $atts['orderby'],
+        'order'      => $atts['order'],
+    ];
+
+    if ( $atts['parent'] !== '' ) {
+        $parent = $atts['parent'];
+        if ( ! is_numeric( $parent ) ) {
+            $parent_term = get_term_by( 'slug', $parent, $taxonomy );
+            $parent = $parent_term ? $parent_term->term_id : 0;
+        }
+        $term_args_base['parent'] = absint( $parent );
+    }
+
+    $ordered_terms = [];
+    if ( $atts['parent'] !== '' ) {
+        $terms = get_terms( $term_args_base );
+        if ( ! is_wp_error( $terms ) && ! empty( $terms ) ) {
+            $ordered_terms = array_map( function ( $t ) {
+                return [ $t, false ];
+            }, $terms );
+        }
+    } else {
+        $term_args_base['parent'] = 0;
+        $parents = get_terms( $term_args_base );
+        if ( is_wp_error( $parents ) ) {
+            $parents = [];
+        }
+        foreach ( $parents as $parent_term ) {
+            $ordered_terms[] = [ $parent_term, true ];
+            $children = get_terms( [
+                'taxonomy'   => $taxonomy,
+                'hide_empty' => false,
+                'parent'     => $parent_term->term_id,
+                'orderby'    => $atts['orderby'],
+                'order'      => $atts['order'],
+            ] );
+            if ( ! is_wp_error( $children ) && ! empty( $children ) ) {
+                foreach ( $children as $child ) {
+                    $ordered_terms[] = [ $child, false ];
+                }
+            }
+        }
+    }
+
+    if ( empty( $ordered_terms ) ) {
+        return '';
+    }
+
+    $id   = 'eceens-cl-' . $loop_instance;
+    $cols = absint( $atts['columns'] ) ?: 3;
+    $gap  = esc_attr( $atts['gap'] );
+
+    $out  = '<style>';
+    $out .= sprintf( '#%s{display:grid;grid-template-columns:repeat(%d,1fr);gap:%s;width:100%%}', $id, $cols, $gap );
+    $out .= '</style>';
+    $out .= sprintf( '<div id="%s" class="eceens-category-loop">', esc_attr( $id ) );
+
+    foreach ( $ordered_terms as list( $term, $is_parent ) ) {
+        $color      = eceens_get_term_color( $term );
+        $text_color = eceens_contrast_color( $color );
+        $name       = esc_html( $term->name );
+        $desc       = ! empty( $term->description ) ? wp_kses_post( $term->description ) : '';
+        $link_url   = get_term_link( $term );
+        $card_style = sprintf( '--eceens-cat-color:%s;--eceens-cat-text:%s', esc_attr( $color ), esc_attr( $text_color ) );
+        $pill_style = sprintf( 'background:%s;color:%s', esc_attr( $color ), esc_attr( $text_color ) );
+
+        $card_class = 'eceens-loop-card';
+        if ( ! $is_parent ) {
+            $card_class .= ' eceens-loop-subcard';
+        }
+
+        $inner = '<span class="eceens-category-label eceens-loop-pill" style="' . esc_attr( $pill_style ) . '">' . $name . '</span>';
+        $inner .= '<div class="eceens-loop-body">';
+        if ( $desc ) {
+            $inner .= '<div class="eceens-loop-description">' . $desc . '</div>';
+        }
+        if ( $atts['link'] === 'yes' && ! is_wp_error( $link_url ) ) {
+            $inner .= '<span class="eceens-loop-more">Lees meer →</span>';
+        }
+        $inner .= '</div>';
+
+        if ( $atts['link'] === 'yes' && ! is_wp_error( $link_url ) ) {
+            $out .= '<a href="' . esc_url( $link_url ) . '" class="' . esc_attr( $card_class ) . '" style="' . esc_attr( $card_style ) . '">' . $inner . '</a>';
+        } else {
+            $out .= '<div class="' . esc_attr( $card_class ) . '" style="' . esc_attr( $card_style ) . '">' . $inner . '</div>';
+        }
+    }
+
+    $out .= '</div>';
+    return $out;
 }
 
 function eceens_enqueue_pill_css() {
