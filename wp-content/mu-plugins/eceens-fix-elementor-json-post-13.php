@@ -42,6 +42,10 @@ function eceens_elementor_json_variants( $raw ) {
 	// Convert class="x" and id="y" → class=\"x\" / id=\"y\".
 	$variants['escape_html_attr_quotes'] = preg_replace( '/\b(class|id)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', $raw );
 	$variants['escape_html_attr_quotes_unslash'] = preg_replace( '/\b(class|id)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', wp_unslash( $raw ) );
+	// More general: escape any HTML-like attribute="..." to attribute=\"...\".
+	// This avoids JSON breakage when Elementor titles/text contain raw HTML with quotes.
+	$variants['escape_all_html_attr_quotes'] = preg_replace( '/\b([a-zA-Z][a-zA-Z0-9:_-]*)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', $raw );
+	$variants['escape_all_html_attr_quotes_unslash'] = preg_replace( '/\b([a-zA-Z][a-zA-Z0-9:_-]*)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', wp_unslash( $raw ) );
 
 	// Extract between first '[' and last ']' (common when trailing junk breaks JSON).
 	$first_bracket = is_string( $raw ) ? strpos( $raw, '[' ) : false;
