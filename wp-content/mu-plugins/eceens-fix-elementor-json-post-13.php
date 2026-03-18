@@ -87,12 +87,51 @@ function eceens_elementor_json_variants( $raw ) {
 	// De-dupe while preserving labels.
 	$seen = [];
 	$out  = [];
-	foreach ( $variants as $label => $val ) {
+	// Prefer actual "repair" variants first; leave raw/as-is last.
+	$preferred_order = [
+		'hard_fix_typed_span_snippet',
+		'escape_all_html_attr_quotes_unslash',
+		'escape_all_html_attr_quotes',
+		'escape_html_attr_quotes_unslash',
+		'escape_html_attr_quotes',
+		'double_encoded_slice_brackets',
+		'double_encoded_stripslashes',
+		'double_encoded_unslash',
+		'double_encoded_inner',
+		'slice_brackets_remove_ctrl',
+		'slice_brackets_unslash',
+		'slice_brackets',
+		'remove_ctrl_trim',
+		'remove_ctrl',
+		'stripslashes_twice',
+		'stripslashes',
+		'wp_unslash',
+		'trim',
+		'rtrim_nulls',
+		'as-is',
+	];
+	$sorted = [];
+	foreach ( $preferred_order as $k ) {
+		if ( array_key_exists( $k, $variants ) ) {
+			$sorted[ $k ] = $variants[ $k ];
+		}
+	}
+	foreach ( $variants as $k => $v ) {
+		if ( ! array_key_exists( $k, $sorted ) ) {
+			$sorted[ $k ] = $v;
+		}
+	}
+
+	foreach ( $sorted as $label => $val ) {
 		if ( ! is_string( $val ) ) {
 			continue;
 		}
 		// Skip no-op variants to keep logs readable.
 		if ( $val === $raw && ! in_array( $label, [ 'as-is' ], true ) ) {
+			continue;
+		}
+		// If the string still contains the known-bad pattern, don't accept it as "as-is".
+		if ( 'as-is' === $label && false !== strpos( $val, '<span class="' ) ) {
 			continue;
 		}
 		$key = md5( $val );
