@@ -10,31 +10,27 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-add_action( 'admin_init', function () {
+function eceens_run_elementor_css_regeneration() {
 	if ( ! current_user_can( 'manage_options' ) ) {
 		return;
 	}
 
-	if ( ! isset( $_GET['eceens-regenerate-elementor-css'] ) || '1' !== (string) $_GET['eceens-regenerate-elementor-css'] ) {
-		return;
-	}
-
 	if ( ! class_exists( '\\Elementor\\Plugin' ) ) {
-		wp_die( 'Elementor not loaded.' );
+		update_option( 'eceens_regenerate_elementor_css_log', [ 'error' => 'Elementor not loaded.' ], false );
+		update_option( 'eceens_regenerate_elementor_css_done', time(), false );
+		return;
 	}
 
 	$ids = [];
 
-	// Homepage doc (what you opened earlier).
+	// Homepage doc (the one you're editing).
 	$ids[] = 13;
 
-	// Static front page if set.
 	$front_id = (int) get_option( 'page_on_front' );
 	if ( $front_id > 0 ) {
 		$ids[] = $front_id;
 	}
 
-	// Active Kit (site settings).
 	$kit_id = (int) get_option( 'elementor_active_kit' );
 	if ( $kit_id > 0 ) {
 		$ids[] = $kit_id;
@@ -43,13 +39,12 @@ add_action( 'admin_init', function () {
 	$ids = array_values( array_unique( array_filter( array_map( 'intval', $ids ) ) ) );
 
 	$log = [
-		'ids'        => $ids,
-		'generated'  => [],
-		'errors'     => [],
+		'ids'           => $ids,
+		'generated'     => [],
+		'errors'        => [],
 		'cache_cleared' => false,
 	];
 
-	// Clear cache first.
 	try {
 		\Elementor\Plugin::$instance->files_manager->clear_cache();
 		$log['cache_cleared'] = true;
@@ -61,7 +56,6 @@ add_action( 'admin_init', function () {
 		try {
 			if ( class_exists( '\\Elementor\\Core\\Files\\CSS\\Post' ) ) {
 				$css = new \Elementor\Core\Files\CSS\Post( $id );
-				$css->enqueue();
 				$css->update();
 				$log['generated'][] = $id;
 			} else {
@@ -74,9 +68,27 @@ add_action( 'admin_init', function () {
 
 	update_option( 'eceens_regenerate_elementor_css_log', $log, false );
 	update_option( 'eceens_regenerate_elementor_css_done', time(), false );
+}
 
+// Trigger from wp-admin (works if Elementor is loaded on that request).
+add_action( 'admin_init', function () {
+	if ( ! isset( $_GET['eceens-regenerate-elementor-css'] ) || '1' !== (string) $_GET['eceens-regenerate-elementor-css'] ) {
+		return;
+	}
+	eceens_run_elementor_css_regeneration();
 	wp_safe_redirect( remove_query_arg( 'eceens-regenerate-elementor-css' ) );
 	exit;
+} );
+
+// Trigger from inside Elementor editor request (Elementor is guaranteed loaded here).
+add_action( 'elementor/init', function () {
+	if ( ! is_admin() ) {
+		return;
+	}
+	if ( ! isset( $_GET['eceens-regenerate-elementor-css'] ) || '1' !== (string) $_GET['eceens-regenerate-elementor-css'] ) {
+		return;
+	}
+	eceens_run_elementor_css_regeneration();
 } );
 
 add_action( 'admin_notices', function () {
