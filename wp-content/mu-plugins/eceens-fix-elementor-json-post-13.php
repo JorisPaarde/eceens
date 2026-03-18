@@ -30,10 +30,22 @@ function eceens_elementor_json_variants( $raw ) {
 	$variants['wp_unslash'] = wp_unslash( $raw );
 	$variants['stripslashes'] = stripslashes( $raw );
 	$variants['stripslashes_twice'] = stripslashes( stripslashes( $raw ) );
+	$variants['trim'] = trim( $raw );
+	$variants['rtrim_nulls'] = rtrim( $raw, "\x00" );
 
 	// Remove non-whitespace ASCII control chars that can break JSON.
 	// Keep \t \n \r (valid JSON whitespace outside strings).
 	$variants['remove_ctrl'] = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $raw );
+	$variants['remove_ctrl_trim'] = trim( (string) preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $raw ) );
+
+	// Extract between first '[' and last ']' (common when trailing junk breaks JSON).
+	$first_bracket = is_string( $raw ) ? strpos( $raw, '[' ) : false;
+	$last_bracket  = is_string( $raw ) ? strrpos( $raw, ']' ) : false;
+	if ( false !== $first_bracket && false !== $last_bracket && $last_bracket > $first_bracket ) {
+		$variants['slice_brackets'] = substr( $raw, $first_bracket, $last_bracket - $first_bracket + 1 );
+		$variants['slice_brackets_unslash'] = wp_unslash( $variants['slice_brackets'] );
+		$variants['slice_brackets_remove_ctrl'] = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $variants['slice_brackets'] );
+	}
 
 	// If it's a JSON-encoded string that itself contains JSON (starts with a quote).
 	if ( is_string( $raw ) && strlen( $raw ) > 2 && '"' === $raw[0] ) {
@@ -42,6 +54,11 @@ function eceens_elementor_json_variants( $raw ) {
 			$variants['double_encoded_inner'] = $inner;
 			$variants['double_encoded_unslash'] = wp_unslash( $inner );
 			$variants['double_encoded_stripslashes'] = stripslashes( $inner );
+			$inner_first = strpos( $inner, '[' );
+			$inner_last  = strrpos( $inner, ']' );
+			if ( false !== $inner_first && false !== $inner_last && $inner_last > $inner_first ) {
+				$variants['double_encoded_slice_brackets'] = substr( $inner, $inner_first, $inner_last - $inner_first + 1 );
+			}
 		}
 	}
 
@@ -197,6 +214,10 @@ add_action( 'admin_notices', function () {
 		echo '<p>Backup key: <code>' . esc_html( (string) ( $res['backup_key'] ?? '' ) ) . '</code></p>';
 		if ( ! empty( $res['latest_backup_key'] ) ) {
 			echo '<p>Latest backup key: <code>' . esc_html( (string) $res['latest_backup_key'] ) . '</code></p>';
+		}
+		if ( ! empty( $res['attempts'] ) && is_array( $res['attempts'] ) ) {
+			$attempts = array_slice( $res['attempts'], 0, 50 );
+			echo '<details style="margin-top:8px;"><summary>Attempts (first 50)</summary><pre style="white-space:pre-wrap;max-width:100%;">' . esc_html( print_r( $attempts, true ) ) . '</pre></details>';
 		}
 		echo '</div>';
 		return;
