@@ -38,6 +38,11 @@ function eceens_elementor_json_variants( $raw ) {
 	$variants['remove_ctrl'] = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $raw );
 	$variants['remove_ctrl_trim'] = trim( (string) preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $raw ) );
 
+	// Fix a common corruption: embedded HTML with unescaped quotes in attributes, e.g. class="..." inside a JSON string.
+	// Convert class="x" and id="y" → class=\"x\" / id=\"y\".
+	$variants['escape_html_attr_quotes'] = preg_replace( '/\b(class|id)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', $raw );
+	$variants['escape_html_attr_quotes_unslash'] = preg_replace( '/\b(class|id)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', wp_unslash( $raw ) );
+
 	// Extract between first '[' and last ']' (common when trailing junk breaks JSON).
 	$first_bracket = is_string( $raw ) ? strpos( $raw, '[' ) : false;
 	$last_bracket  = is_string( $raw ) ? strrpos( $raw, ']' ) : false;
