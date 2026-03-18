@@ -15,8 +15,57 @@ function eceens_force_fix_elementor_quotes_string( $s ) {
 		return $s;
 	}
 
-	// Target the exact known-bad attributes first (most reliable).
-	$s = str_replace(
+	// Fix invalid JSON caused by unescaped quotes inside HTML tags that were inserted into a JSON string.
+	// We'll scan the JSON text, and when we're inside a JSON string value AND inside an HTML tag (<...>),
+	// we escape any unescaped double quotes.
+
+	$out          = '';
+	$in_string    = false;
+	$escape_next  = false;
+	$in_html_tag  = false;
+	$len          = strlen( $s );
+
+	for ( $i = 0; $i < $len; $i++ ) {
+		$ch = $s[ $i ];
+
+		if ( $escape_next ) {
+			$out        .= $ch;
+			$escape_next = false;
+			continue;
+		}
+
+		if ( '\\' === $ch ) {
+			$out        .= $ch;
+			$escape_next = true;
+			continue;
+		}
+
+		if ( '"' === $ch ) {
+			if ( $in_string && $in_html_tag ) {
+				// Escape quotes inside <...> while inside JSON string.
+				$out .= '\\"';
+				continue;
+			}
+			$in_string = ! $in_string;
+			$out      .= $ch;
+			continue;
+		}
+
+		if ( $in_string ) {
+			if ( '<' === $ch ) {
+				$in_html_tag = true;
+			} elseif ( '>' === $ch ) {
+				$in_html_tag = false;
+			}
+		} else {
+			$in_html_tag = false;
+		}
+
+		$out .= $ch;
+	}
+
+	// Also apply exact targeted replacements (extra safety).
+	$out = str_replace(
 		[
 			'class="accent-nusamen"',
 			'id="typed-nusamen"',
@@ -25,14 +74,10 @@ function eceens_force_fix_elementor_quotes_string( $s ) {
 			'class=\\\"accent-nusamen\\\"',
 			'id=\\\"typed-nusamen\\\"',
 		],
-		$s
+		$out
 	);
 
-	// Broader safety net: escape ANY html-like attr="..." to attr=\"...\" (only if it appears inside a JSON string).
-	// This is conservative enough for Elementor text fields that may contain inline HTML.
-	$s = preg_replace( '/\b([a-zA-Z][a-zA-Z0-9:_-]*)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', $s );
-
-	return $s;
+	return $out;
 }
 
 add_action( 'admin_init', function () {
