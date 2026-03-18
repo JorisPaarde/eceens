@@ -233,7 +233,12 @@ add_action( 'admin_notices', function () {
 	if ( ! is_array( $res ) ) {
 		return;
 	}
-	delete_option( 'eceens_fix_el_13_json_result' );
+	// Keep the result until explicitly cleared, so it's not missed during redirects.
+	if ( isset( $_GET['eceens-clear-fix-el-13-json'] ) && '1' === (string) $_GET['eceens-clear-fix-el-13-json'] ) {
+		delete_option( 'eceens_fix_el_13_json_result' );
+		echo '<div class="notice notice-info"><p>Fix-result cleared.</p></div>';
+		return;
+	}
 
 	if ( empty( $res['ok'] ) ) {
 		echo '<div class="notice notice-error"><p><strong>Fix Elementor JSON (post 13) mislukt.</strong> ' . esc_html( (string) ( $res['error'] ?? '' ) ) . '</p>';
@@ -245,6 +250,8 @@ add_action( 'admin_notices', function () {
 			$attempts = array_slice( $res['attempts'], 0, 50 );
 			echo '<details style="margin-top:8px;"><summary>Attempts (first 50)</summary><pre style="white-space:pre-wrap;max-width:100%;">' . esc_html( print_r( $attempts, true ) ) . '</pre></details>';
 		}
+		$clear_url = add_query_arg( 'eceens-clear-fix-el-13-json', '1', admin_url() );
+		echo '<p style="margin-top:10px;"><a href="' . esc_url( $clear_url ) . '">Clear this fix result</a></p>';
 		echo '</div>';
 		return;
 	}
