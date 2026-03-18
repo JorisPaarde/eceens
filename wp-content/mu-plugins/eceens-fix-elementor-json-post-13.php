@@ -38,6 +38,19 @@ function eceens_elementor_json_variants( $raw ) {
 	$variants['remove_ctrl'] = preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $raw );
 	$variants['remove_ctrl_trim'] = trim( (string) preg_replace( '/[\x00-\x08\x0B\x0C\x0E-\x1F]/', '', $raw ) );
 
+	// Hard fix for the known broken snippet we saw in the editor: unescaped quotes inside HTML attributes.
+	$variants['hard_fix_typed_span_snippet'] = str_replace(
+		[
+			'class="accent-nusamen"',
+			'id="typed-nusamen"',
+		],
+		[
+			'class=\\\\\"accent-nusamen\\\\\"',
+			'id=\\\\\"typed-nusamen\\\\\"',
+		],
+		$raw
+	);
+
 	// Fix a common corruption: embedded HTML with unescaped quotes in attributes, e.g. class="..." inside a JSON string.
 	// Convert class="x" and id="y" → class=\"x\" / id=\"y\".
 	$variants['escape_html_attr_quotes'] = preg_replace( '/\b(class|id)="([^"]*)"/', '$1=\\\\\"$2\\\\\"', $raw );
@@ -76,6 +89,10 @@ function eceens_elementor_json_variants( $raw ) {
 	$out  = [];
 	foreach ( $variants as $label => $val ) {
 		if ( ! is_string( $val ) ) {
+			continue;
+		}
+		// Skip no-op variants to keep logs readable.
+		if ( $val === $raw && ! in_array( $label, [ 'as-is' ], true ) ) {
 			continue;
 		}
 		$key = md5( $val );
