@@ -65,8 +65,13 @@ function eceens_current_post_type() {
  */
 function eceens_render_pill( $term, $link_mode, $extra_style = '' ) {
     $color      = eceens_get_term_color( $term );
-    $text_color = eceens_contrast_color( $color );
-    $style      = sprintf( 'background:%s;color:%s', esc_attr( $color ), esc_attr( $text_color ) );
+    // Transparanter pill look: lichte/tinted background en tekst exact in categoriekleur.
+    $text_color = $color;
+    $style      = sprintf(
+        'background:color-mix(in srgb, %s 18%%, transparent);color:%s',
+        esc_attr( $color ),
+        esc_attr( $text_color )
+    );
     if ( $extra_style ) {
         $style .= ';' . $extra_style;
     }
