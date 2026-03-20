@@ -87,12 +87,14 @@ input.eceens-cat-border[type="reset"] {
     color: inherit;
     padding: 20px 20px 18px;
     background: #fff;
+    position: relative;
+    z-index: 1;
     border: 1px solid rgba(0, 0, 0, 0.06);
     border-top: 4px solid var(--eceens-cat-color, #2A50FF);
     border-radius: 20px;
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
-    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
 }
 
 .eceens-loop-card:last-child {
