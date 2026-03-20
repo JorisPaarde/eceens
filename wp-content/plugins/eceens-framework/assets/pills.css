@@ -51,6 +51,15 @@
     background: #fff !important;
     border-color: var(--eceens-cat-color) !important;
 }
+.eceens-cat-bg .elementor-button:hover,
+.eceens-cat-bg .elementor-button-link:hover,
+.eceens-cat-bg .elementor-widget-button .elementor-button:hover {
+    /* Keep category border/text stable; add inner shadow instead of changing colors. */
+    background: #fff !important;
+    color: var(--eceens-cat-text) !important;
+    border-color: var(--eceens-cat-color) !important;
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18) !important;
+}
 .eceens-cat-text,
 .eceens-cat-text * { color: var(--eceens-cat-color) !important; }
 .eceens-cat-border { border-color: var(--eceens-cat-color) !important; }
