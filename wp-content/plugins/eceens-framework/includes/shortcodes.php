@@ -68,9 +68,10 @@ function eceens_render_pill( $term, $link_mode, $extra_style = '' ) {
     // Transparanter pill look: lichte/tinted background en tekst exact in categoriekleur.
     $text_color = $color;
     $style      = sprintf(
-        'background:color-mix(in srgb, %s 18%%, transparent);color:%s',
+        'background:color-mix(in srgb, %s 18%%, transparent);color:%s;border-color:%s',
         esc_attr( $color ),
-        esc_attr( $text_color )
+        esc_attr( $text_color ),
+        esc_attr( $color )
     );
     if ( $extra_style ) {
         $style .= ';' . $extra_style;
