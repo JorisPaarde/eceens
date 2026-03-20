@@ -10,6 +10,15 @@
     animation: eceens-enter-bounce 2.5s cubic-bezier(0.22, 1, 0.36, 1) 0.5s forwards;
 }
 
+.eceens-floating-btn.elementor-button:hover,
+.eceens-floating-btn.elementor-button:focus,
+.eceens-floating-btn.elementor-button:active {
+    background-color: var(--eceens-floating-btn-bg) !important;
+    color: var(--eceens-floating-btn-color) !important;
+    border-color: var(--eceens-floating-btn-border) !important;
+    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18) !important;
+}
+
 @keyframes eceens-enter-bounce {
     /* fade in up */
     0% {

@@ -81,6 +81,16 @@ add_action( 'wp_footer', function () {
             el.style.setProperty('--eceens-bubble-width', '0px');
         }
     });
+
+    // Preserve Elementor floating button colors on hover by caching computed styles.
+    (function(){
+        var btn = document.querySelector('.eceens-floating-btn');
+        if(!btn) return;
+        var cs = getComputedStyle(btn);
+        btn.style.setProperty('--eceens-floating-btn-bg', cs.backgroundColor);
+        btn.style.setProperty('--eceens-floating-btn-color', cs.color);
+        btn.style.setProperty('--eceens-floating-btn-border', cs.borderTopColor);
+    })();
     </script>
     <?php
 }, 99 );
