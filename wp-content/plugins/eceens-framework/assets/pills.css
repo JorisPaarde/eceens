@@ -79,9 +79,9 @@ input.eceens-cat-border[type="reset"] {
 
 .eceens-loop-card {
     display: flex;
-    flex-direction: row;
-    align-items: stretch;
-    gap: 20px;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
     min-width: 0;
     text-decoration: none;
     color: inherit;
@@ -98,7 +98,7 @@ input.eceens-cat-border[type="reset"] {
 }
 
 .eceens-loop-card .eceens-loop-pill {
-    flex-shrink: 0;
+    flex: 0 0 auto;
     padding: 10px 20px;
     border-radius: 20px;
     font-weight: 600;
@@ -109,6 +109,8 @@ input.eceens-cat-border[type="reset"] {
     /* Let the shortcode inline style provide the tinted background. */
     background: transparent;
     border: 1px solid currentColor;
+    width: max-content;
+    max-width: 100%;
 }
 
 .eceens-loop-card .eceens-loop-body {
@@ -117,6 +119,7 @@ input.eceens-cat-border[type="reset"] {
     display: flex;
     flex-direction: column;
     gap: 8px;
+    width: 100%;
 }
 
 .eceens-loop-card .eceens-loop-description,
