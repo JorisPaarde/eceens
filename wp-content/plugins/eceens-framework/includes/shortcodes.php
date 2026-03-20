@@ -542,7 +542,13 @@ function eceens_category_loop_shortcode( $atts ) {
         $desc       = ! empty( $term->description ) ? wp_kses_post( $term->description ) : '';
         $link_url   = get_term_link( $term );
         $card_style = sprintf( '--eceens-cat-color:%s;--eceens-cat-text:%s', esc_attr( $color ), esc_attr( $text_color ) );
-        $pill_style = sprintf( 'background:%s;color:%s', esc_attr( $color ), esc_attr( $text_color ) );
+        // Lichter/transparent: background als tinted mix, tekst in de eigen categoriekleur.
+        // (Elementor/loop CSS zet border op currentColor, dus border volgt automatisch.)
+        $pill_style = sprintf(
+            'background:color-mix(in srgb, %s 18%%, transparent);color:%s',
+            esc_attr( $color ),
+            esc_attr( $color )
+        );
 
         $card_class = 'eceens-loop-card';
         if ( ! $is_parent ) {

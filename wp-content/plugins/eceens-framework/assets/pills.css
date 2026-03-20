@@ -7,17 +7,19 @@
 
 .eceens-faq-pill {
     display: inline-block;
-    padding: 10px 16px;
-    border-radius: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
     text-decoration: none;
     font-size: 14px;
     font-weight: 500;
     line-height: 1.4;
+    background: transparent;
+    border: 1px solid currentColor;
     transition: opacity .2s;
 }
 
 .eceens-faq-pill:hover {
-    opacity: .5;
+    opacity: .85;
 }
 
 .eceens-category-pills {
@@ -26,10 +28,12 @@
 
 .eceens-category-label {
     display: inline-block;
-    padding: 10px 24px;
-    border-radius: 10px;
+    padding: 10px 20px;
+    border-radius: 20px;
     text-decoration: none;
     font-weight: 600;
+    background: transparent !important;
+    border: 1px solid currentColor;
 }
 
 /* Category color utility classes — work with --eceens-cat-color / --eceens-cat-text */
@@ -38,11 +42,23 @@
     color: var(--eceens-cat-text) !important;
 }
 .eceens-cat-bg {
-    background: var(--eceens-cat-color) !important;
+    /* Make selected color look like a soft/tinted pill (hover-like) by default */
+    background: color-mix(in srgb, var(--eceens-cat-color) 20%, transparent) !important;
+    border-color: color-mix(in srgb, var(--eceens-cat-color) 60%, transparent) !important;
 }
 .eceens-cat-text,
 .eceens-cat-text * { color: var(--eceens-cat-color) !important; }
 .eceens-cat-border { border-color: var(--eceens-cat-color) !important; }
+.eceens-cat-border.elementor-button,
+button.eceens-cat-border,
+input.eceens-cat-border[type="button"],
+input.eceens-cat-border[type="submit"],
+input.eceens-cat-border[type="reset"] {
+    border-color: var(--eceens-cat-color) !important;
+}
+.eceens-cat-border .elementor-button {
+    border-color: var(--eceens-cat-color) !important;
+}
 
 /* Categoriebeschrijving — goed te stylen via class of Custom CSS */
 .eceens-current-category-description {
@@ -83,13 +99,16 @@
 
 .eceens-loop-card .eceens-loop-pill {
     flex-shrink: 0;
-    padding: 12px 20px;
-    border-radius: 12px;
+    padding: 10px 20px;
+    border-radius: 20px;
     font-weight: 600;
     font-size: 15px;
     line-height: 1.3;
     display: inline-flex;
     align-items: center;
+    /* Let the shortcode inline style provide the tinted background. */
+    background: transparent;
+    border: 1px solid currentColor;
 }
 
 .eceens-loop-card .eceens-loop-body {
@@ -151,7 +170,7 @@
 
 /* Outer triangle — border color, full size */
 .eceens-bubble::after {
-    bottom: -20px !important;
+    bottom: -21px !important;
     left: 60px !important;
     border-width: 20px 40px 0 0 !important;
     border-color: var(--eceens-bubble-color, currentColor) transparent transparent transparent !important;
@@ -160,9 +179,9 @@
 
 /* Inner triangle — fill color, uniform border thickness on all edges */
 .eceens-bubble::before {
-    bottom: calc(-20px + var(--eceens-bubble-width, 0px) * 1.618) !important;
+    bottom: calc(-21px + var(--eceens-bubble-width, 0px) * 1.618) !important;
     left: calc(60px + var(--eceens-bubble-width, 0px)) !important;
-    border-width: calc(20px - var(--eceens-bubble-width, 0px) * 1.618) calc(40px - var(--eceens-bubble-width, 0px) * 3.236) 0 0 !important;
+    border-width: calc(21px - var(--eceens-bubble-width, 0px) * 1.618) calc(40px - var(--eceens-bubble-width, 0px) * 3.236) 0 0 !important;
     border-color: var(--eceens-bubble-fill, #fff) transparent transparent transparent !important;
     z-index: 2 !important;
 }
