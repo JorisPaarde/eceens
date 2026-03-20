@@ -85,12 +85,20 @@ input.eceens-cat-border[type="reset"] {
     min-width: 0;
     text-decoration: none;
     color: inherit;
-    padding: 16px 0;
-    border-bottom: 1px solid #eee;
+    padding: 20px 20px 18px;
+    background: #fff;
+    border: 1px solid rgba(0, 0, 0, 0.06);
+    border-top: 4px solid var(--eceens-cat-color, #2A50FF);
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 6px 18px color-mix(in srgb, var(--eceens-cat-color, #2A50FF) 16%, transparent);
 }
 
 .eceens-loop-card:last-child {
-    border-bottom: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
 }
 
 .eceens-loop-card:hover {
