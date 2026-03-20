@@ -13,7 +13,7 @@
     font-size: 14px;
     font-weight: 500;
     line-height: 1.4;
-    background: transparent;
+    background: #fff;
     border: 1px solid currentColor;
     transition: opacity .2s;
 }
@@ -32,7 +32,7 @@
     border-radius: 20px;
     text-decoration: none;
     font-weight: 600;
-    background: transparent !important;
+    background: #fff !important;
     border: 1px solid currentColor;
 }
 
@@ -42,9 +42,9 @@
     color: var(--eceens-cat-text) !important;
 }
 .eceens-cat-bg {
-    /* Make selected color look like a soft/tinted pill (hover-like) by default */
-    background: color-mix(in srgb, var(--eceens-cat-color) 20%, transparent) !important;
-    border-color: color-mix(in srgb, var(--eceens-cat-color) 60%, transparent) !important;
+    /* White fill with category-colored border/text */
+    background: #fff !important;
+    border-color: var(--eceens-cat-color) !important;
 }
 .eceens-cat-text,
 .eceens-cat-text * { color: var(--eceens-cat-color) !important; }
@@ -107,7 +107,7 @@ input.eceens-cat-border[type="reset"] {
     display: inline-flex;
     align-items: center;
     /* Let the shortcode inline style provide the tinted background. */
-    background: transparent;
+    background: #fff;
     border: 1px solid currentColor;
     width: max-content;
     max-width: 100%;

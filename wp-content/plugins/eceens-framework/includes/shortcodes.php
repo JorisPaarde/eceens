@@ -68,7 +68,7 @@ function eceens_render_pill( $term, $link_mode, $extra_style = '' ) {
     // Transparanter pill look: lichte/tinted background en tekst exact in categoriekleur.
     $text_color = $color;
     $style      = sprintf(
-        'background:color-mix(in srgb, %s 18%%, transparent);color:%s;border-color:%s',
+        'background:#fff;color:%s;border-color:%s',
         esc_attr( $color ),
         esc_attr( $text_color ),
         esc_attr( $color )
@@ -585,7 +585,7 @@ function eceens_category_loop_shortcode( $atts ) {
         // Lichter/transparent: background als tinted mix, tekst in de eigen categoriekleur.
         // (Elementor/loop CSS zet border op currentColor, dus border volgt automatisch.)
         $pill_style = sprintf(
-            'background:color-mix(in srgb, %s 18%%, transparent);color:%s',
+            'background:#fff;color:%s;border-color:%s',
             esc_attr( $color ),
             esc_attr( $color )
         );
