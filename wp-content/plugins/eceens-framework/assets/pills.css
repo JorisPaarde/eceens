@@ -94,7 +94,7 @@ input.eceens-cat-border[type="reset"] {
     border-top-left-radius: 20px;
     border-top-right-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 6px 18px color-mix(in srgb, var(--eceens-cat-color, #2A50FF) 16%, transparent);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
 }
 
 .eceens-loop-card:last-child {
