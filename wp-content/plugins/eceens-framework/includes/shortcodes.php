@@ -473,6 +473,10 @@ function eceens_category_loop_shortcode( $atts ) {
         'taxonomy' => 'faq_categorie',
         'columns'  => '3',
         'gap'      => '20px',
+        'columns_tablet' => '',
+        'columns_mobile' => '',
+        'gap_tablet'     => '',
+        'gap_mobile'     => '',
         'parent'   => '',
         'orderby'  => 'name',
         'order'    => 'ASC',
@@ -537,6 +541,36 @@ function eceens_category_loop_shortcode( $atts ) {
 
     $out  = '<style>';
     $out .= sprintf( '#%s{display:grid;grid-template-columns:repeat(%d,1fr);gap:%s;width:100%%}', $id, $cols, $gap );
+
+    // Responsive columns/gap.
+    $tablet_css = [];
+    if ( $atts['columns_tablet'] !== '' ) {
+        $ct = absint( $atts['columns_tablet'] );
+        if ( $ct ) {
+            $tablet_css[] = sprintf( 'grid-template-columns:repeat(%d,1fr)', $ct );
+        }
+    }
+    if ( $atts['gap_tablet'] !== '' ) {
+        $tablet_css[] = sprintf( 'gap:%s', esc_attr( $atts['gap_tablet'] ) );
+    }
+    if ( ! empty( $tablet_css ) ) {
+        $out .= sprintf( '@media(max-width:1024px){#%s{%s}}', esc_attr( $id ), implode( ';', $tablet_css ) );
+    }
+
+    $mobile_css = [];
+    if ( $atts['columns_mobile'] !== '' ) {
+        $cm = absint( $atts['columns_mobile'] );
+        if ( $cm ) {
+            $mobile_css[] = sprintf( 'grid-template-columns:repeat(%d,1fr)', $cm );
+        }
+    }
+    if ( $atts['gap_mobile'] !== '' ) {
+        $mobile_css[] = sprintf( 'gap:%s', esc_attr( $atts['gap_mobile'] ) );
+    }
+    if ( ! empty( $mobile_css ) ) {
+        $out .= sprintf( '@media(max-width:767px){#%s{%s}}', esc_attr( $id ), implode( ';', $mobile_css ) );
+    }
+
     $out .= '</style>';
     $out .= sprintf( '<div id="%s" class="eceens-category-loop">', esc_attr( $id ) );
 
