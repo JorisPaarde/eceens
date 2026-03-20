@@ -92,9 +92,9 @@ input.eceens-cat-border[type="reset"] {
     border: 1px solid rgba(0, 0, 0, 0.06);
     border-top: 4px solid var(--eceens-cat-color, #2A50FF);
     border-radius: 20px;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2) !important;
+    cursor: pointer;
+    transition: transform 180ms ease, box-shadow 180ms ease;
 }
 
 .eceens-loop-card:last-child {
@@ -103,6 +103,8 @@ input.eceens-cat-border[type="reset"] {
 
 .eceens-loop-card:hover {
     color: inherit;
+    transform: translateY(-6px);
+    box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2) !important;
 }
 
 .eceens-loop-card .eceens-loop-pill {
