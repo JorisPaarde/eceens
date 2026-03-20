@@ -15,11 +15,16 @@
     line-height: 1.4;
     background: #fff;
     border: 1px solid currentColor;
-    transition: opacity .2s;
+    cursor: pointer;
+    box-shadow: 0 0 0 rgba(0, 0, 0, 0);
+    transition: transform 180ms ease, box-shadow 180ms ease, opacity .2s;
 }
 
 .eceens-faq-pill:hover {
     opacity: .85;
+    transform: translateY(-3px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
+    z-index: 2;
 }
 
 .eceens-category-pills {
