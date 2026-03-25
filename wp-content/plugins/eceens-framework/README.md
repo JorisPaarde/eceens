@@ -77,6 +77,26 @@ De "current category" Query IDs lezen automatisch de categorie uit de URL. Gebru
 
 ---
 
+## Elementor Dynamic Tags (Media)
+
+In Elementor kun je nu onder **Dynamic Tags > Eceens** direct deze tags kiezen:
+
+- `Eceens Media Image` (voor Image widget)
+- `Eceens Media Video URL` (voor Video widget of URL-veld)
+
+Elke tag heeft een **Source** optie:
+
+- `Auto (current post type)` (aanbevolen in Loop Items)
+- `FAQ`
+- `Content`
+
+Deze lezen de metabox-velden:
+
+- `faq_media_image_id` / `faq_media_video_url`
+- `content_media_image_id` / `content_media_video_url`
+
+---
+
 ## Shortcodes
 
 ### Alle categorieën tonen
