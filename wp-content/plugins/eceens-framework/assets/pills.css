@@ -1,12 +1,30 @@
 .eceens-faq-pills {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
+    align-items: flex-start;
     gap: 8px;
     margin: 0;
+    /* Use full column width — a narrow parent (e.g. inner bubble column) forces one pill per row */
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+/* Elementor/Theme often makes links display:flex + width:100%; that stacks pills vertically */
+.eceens-faq-pills .eceens-faq-pill {
+    flex: 0 1 auto !important;
+    align-self: flex-start !important;
+    width: auto !important;
+    max-width: 100% !important;
+    min-width: 0;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
 }
 
 .eceens-faq-pill {
-    display: inline-block;
     padding: 10px 20px;
     border-radius: 20px;
     text-decoration: none;
@@ -25,6 +43,15 @@
     transform: translateY(-3px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
     z-index: 2;
+}
+
+/* Global Elementor anchor-button hover lift */
+a.elementor-button {
+    transition: transform 180ms ease, box-shadow 180ms ease, opacity .2s;
+}
+a.elementor-button[href]:not([href=""]):not([href="#"]):not([href^="#"]):not([href^="javascript:"]):hover,
+a.elementor-button[href]:not([href=""]):not([href="#"]):not([href^="#"]):not([href^="javascript:"]):focus {
+    transform: translateY(-3px);
 }
 
 .eceens-category-pills {
@@ -206,9 +233,9 @@ input.eceens-cat-border[type="reset"] {
 
 /* Inner triangle — fill color, uniform border thickness on all edges */
 .eceens-bubble::before {
-    bottom: calc(-21px + var(--eceens-bubble-width, 0px) * 1.618) !important;
+    bottom: calc(-20px + var(--eceens-bubble-width, 0px) * 1.618) !important;
     left: calc(60px + var(--eceens-bubble-width, 0px)) !important;
-    border-width: calc(21px - var(--eceens-bubble-width, 0px) * 1.618) calc(40px - var(--eceens-bubble-width, 0px) * 3.236) 0 0 !important;
+    border-width: calc(22px - var(--eceens-bubble-width, 0px) * 1.618) calc(40px - var(--eceens-bubble-width, 0px) * 3.236) 0 0 !important;
     border-color: var(--eceens-bubble-fill, #fff) transparent transparent transparent !important;
     z-index: 2 !important;
 }
@@ -227,13 +254,26 @@ input.eceens-cat-border[type="reset"] {
 .eceens-bubble-right::before {
     left: auto !important;
     right: calc(60px + var(--eceens-bubble-width, 0px)) !important;
-    border-width: calc(20px - var(--eceens-bubble-width, 0px) * 1.618) 0 0 calc(40px - var(--eceens-bubble-width, 0px) * 3.236) !important;
+    border-width: calc(22px - var(--eceens-bubble-width, 0px) * 1.618) 0 0 calc(40px - var(--eceens-bubble-width, 0px) * 3.236) !important;
 }
 
 /* Loop Grid: om-en-om blauw/groen + staart links/rechts. Class "eceens-bubble-loop" op de Loop Grid.
    Kleur/staart worden in JS gezet; .eceens-bubble-alt-left forceert staart links (voor even items). */
 .eceens-bubble-loop .eceens-bubble {
     border-color: var(--eceens-bubble-color) !important;
+}
+/* In loops: default staart rechts (oneven items). */
+.eceens-bubble-loop .eceens-bubble::after {
+    left: auto !important;
+    right: 60px !important;
+    border-width: 20px 0 0 40px !important;
+    border-color: var(--eceens-bubble-color, #119FCD) transparent transparent transparent !important;
+}
+.eceens-bubble-loop .eceens-bubble::before {
+    left: auto !important;
+    right: calc(60px + var(--eceens-bubble-width, 0px)) !important;
+    border-width: calc(22px - var(--eceens-bubble-width, 0px) * 1.618) 0 0 calc(40px - var(--eceens-bubble-width, 0px) * 3.236) !important;
+    border-color: var(--eceens-bubble-fill, #fff) transparent transparent transparent !important;
 }
 /* Even items (2e, 4e, …): staart links i.p.v. rechts */
 .eceens-bubble.eceens-bubble-alt-left::after {
@@ -243,8 +283,8 @@ input.eceens-cat-border[type="reset"] {
     border-color: var(--eceens-bubble-color, #4BAB44) transparent transparent transparent !important;
 }
 .eceens-bubble.eceens-bubble-alt-left::before {
-    left: calc(60px + 2px) !important;
+    left: calc(60px + var(--eceens-bubble-width, 0px)) !important;
     right: auto !important;
-    border-width: calc(20px - 3.236px) calc(40px - 6.472px) 0 0 !important;
+    border-width: calc(22px - var(--eceens-bubble-width, 0px) * 1.618) calc(40px - var(--eceens-bubble-width, 0px) * 3.236) 0 0 !important;
     border-color: var(--eceens-bubble-fill, #fff) transparent transparent transparent !important;
 }

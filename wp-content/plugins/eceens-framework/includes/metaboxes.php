@@ -7,6 +7,12 @@ add_action( 'add_meta_boxes', 'eceens_add_meta_boxes' );
 add_action( 'save_post_faq', 'eceens_save_faq_meta', 10, 2 );
 add_action( 'save_post_content', 'eceens_save_content_meta', 10, 2 );
 add_action( 'admin_enqueue_scripts', 'eceens_metabox_admin_scripts' );
+add_filter( 'manage_faq_posts_columns', 'eceens_add_homepage_featured_column' );
+add_filter( 'manage_content_posts_columns', 'eceens_add_homepage_featured_column' );
+add_action( 'manage_faq_posts_custom_column', 'eceens_render_homepage_featured_column', 10, 2 );
+add_action( 'manage_content_posts_custom_column', 'eceens_render_homepage_featured_column', 10, 2 );
+add_action( 'admin_footer-edit.php', 'eceens_render_list_toggle_script' );
+add_action( 'wp_ajax_eceens_toggle_homepage_featured', 'eceens_ajax_toggle_homepage_featured' );
 
 function eceens_metabox_admin_scripts( $hook ) {
     if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
@@ -221,4 +227,104 @@ function eceens_save_faq_meta( $post_id, $post ) {
 
 function eceens_save_content_meta( $post_id, $post ) {
     eceens_save_meta( $post_id, $post, 'content' );
+}
+
+/* ── Admin list: Homepage Featured toggle ────────────────── */
+
+function eceens_add_homepage_featured_column( $columns ) {
+    $new = [];
+    foreach ( $columns as $key => $label ) {
+        $new[ $key ] = $label;
+        if ( 'title' === $key ) {
+            $new['eceens_homepage_featured'] = 'Homepage Featured';
+        }
+    }
+    if ( ! isset( $new['eceens_homepage_featured'] ) ) {
+        $new['eceens_homepage_featured'] = 'Homepage Featured';
+    }
+    return $new;
+}
+
+function eceens_render_homepage_featured_column( $column, $post_id ) {
+    if ( 'eceens_homepage_featured' !== $column ) {
+        return;
+    }
+
+    $post_type = get_post_type( $post_id );
+    $prefix    = ( 'faq' === $post_type ) ? 'faq' : ( ( 'content' === $post_type ) ? 'content' : '' );
+    if ( '' === $prefix ) {
+        echo '—';
+        return;
+    }
+
+    $key     = "{$prefix}_homepage_featured";
+    $checked = get_post_meta( $post_id, $key, true ) === '1';
+    printf(
+        '<label><input type="checkbox" class="eceens-home-toggle" data-post-id="%d" data-prefix="%s" %s /> %s</label>',
+        (int) $post_id,
+        esc_attr( $prefix ),
+        checked( $checked, true, false ),
+        esc_html__( 'Home', 'eceens-framework' )
+    );
+}
+
+function eceens_render_list_toggle_script() {
+    $screen = get_current_screen();
+    if ( ! $screen || ! in_array( $screen->post_type, [ 'faq', 'content' ], true ) ) {
+        return;
+    }
+    $nonce = wp_create_nonce( 'eceens_toggle_homepage_featured' );
+    ?>
+    <script>
+    (function($){
+        $(document).on('change', '.eceens-home-toggle', function(){
+            var $el = $(this);
+            var prev = !$el.is(':checked');
+            $el.prop('disabled', true);
+            $.post(ajaxurl, {
+                action: 'eceens_toggle_homepage_featured',
+                nonce: '<?php echo esc_js( $nonce ); ?>',
+                post_id: $el.data('post-id'),
+                prefix: $el.data('prefix'),
+                value: $el.is(':checked') ? '1' : ''
+            }).done(function(resp){
+                if(!resp || !resp.success){
+                    $el.prop('checked', prev);
+                }
+            }).fail(function(){
+                $el.prop('checked', prev);
+            }).always(function(){
+                $el.prop('disabled', false);
+            });
+        });
+    })(jQuery);
+    </script>
+    <?php
+}
+
+function eceens_ajax_toggle_homepage_featured() {
+    if ( ! current_user_can( 'edit_posts' ) ) {
+        wp_send_json_error();
+    }
+    check_ajax_referer( 'eceens_toggle_homepage_featured', 'nonce' );
+
+    $post_id = isset( $_POST['post_id'] ) ? absint( $_POST['post_id'] ) : 0;
+    $prefix  = isset( $_POST['prefix'] ) ? sanitize_key( $_POST['prefix'] ) : '';
+    $value   = ( isset( $_POST['value'] ) && $_POST['value'] === '1' ) ? '1' : '';
+
+    if ( $post_id <= 0 || ! in_array( $prefix, [ 'faq', 'content' ], true ) ) {
+        wp_send_json_error();
+    }
+    if ( ! current_user_can( 'edit_post', $post_id ) ) {
+        wp_send_json_error();
+    }
+
+    $key = "{$prefix}_homepage_featured";
+    if ( '1' === $value ) {
+        update_post_meta( $post_id, $key, '1' );
+    } else {
+        delete_post_meta( $post_id, $key );
+    }
+
+    wp_send_json_success();
 }

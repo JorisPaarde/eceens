@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Eceens Framework
  * Description: Custom Post Types, taxonomies, meta boxes, sorting, Elementor helpers and shortcodes for Eceens.
- * Version:     1.6.1
+ * Version:     1.6.5
  * Author:      Eceens
  * Text Domain: eceens-framework
  * Requires at least: 6.0
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'ECEENS_FW_VERSION', '1.6.1' );
+define( 'ECEENS_FW_VERSION', '1.6.5' );
 define( 'ECEENS_FW_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ECEENS_FW_URL', plugin_dir_url( __FILE__ ) );
 
@@ -56,7 +56,8 @@ add_action( 'wp_footer', function () {
             el.style.setProperty('--eceens-bubble-color', isEven ? '#4BAB44' : '#119FCD');
             el.style.setProperty('--eceens-bubble-width', '2px');
             el.style.setProperty('--eceens-bubble-fill', '#fff');
-            el.classList.toggle('eceens-bubble-alt-left', isEven);
+            // Green items stay on the default side; blue alternates to left.
+            el.classList.toggle('eceens-bubble-alt-left', !isEven);
             return;
         }
         var s = getComputedStyle(el);

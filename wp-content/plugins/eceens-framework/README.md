@@ -144,6 +144,8 @@ Gebruik dit in een **Shortcode widget** binnen een Elementor Loop Item template.
 | `level` | `parent` / `child` / `all`       | `parent`           |
 | `link`  | (leeg) / `anchor` / `none`       | (leeg) = archief   |
 
+**Layout:** Pills staan in een flex-row met wrap. Als ze **onder elkaar** blijven, is de **container te smal** (bv. speech-bubblekolom ~190px) of een thema/Elementor-regel zette links op `width:100%` — plugin `1.6.2+` dwingt pills tot `width:auto` zodat ze naast elkaar gaan zodra er breedte is. Zet de shortcode in een **bredere kolom** of op **100% breedte** als je lange categorienamen naast elkaar wilt.
+
 ---
 
 ### Alle FAQ-categorieën (legacy)

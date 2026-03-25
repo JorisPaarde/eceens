@@ -16,7 +16,7 @@
     background-color: var(--eceens-floating-btn-bg) !important;
     color: var(--eceens-floating-btn-color) !important;
     border-color: var(--eceens-floating-btn-border) !important;
-    box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.18) !important;
+    box-shadow: inset 0 0 15px 0 rgba(0, 0, 0, 0.3) !important;
 }
 
 @keyframes eceens-enter-bounce {
