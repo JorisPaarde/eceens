@@ -2,7 +2,7 @@
 
 Plugin voor het beheren van FAQ's en Content op de Eceens website.
 
-**Versie:** 1.5.0
+**Versie:** 1.6.9
 
 ---
 
@@ -98,6 +98,22 @@ Deze lezen de metabox-velden:
 ---
 
 ## Shortcodes
+
+### Titel met handmatige override
+
+```
+[eceens_display_title]
+```
+
+Toont de **Handmatige titel** als die is ingevuld. Als die leeg is, toont de shortcode de normale WordPress titel.
+
+Optioneel:
+
+```
+[eceens_display_title type="faq"]
+[eceens_display_title type="content"]
+[eceens_display_title tag="h2" class="my-title"]
+```
 
 ### Alle categorieën tonen
 
