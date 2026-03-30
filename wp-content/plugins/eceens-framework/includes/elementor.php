@@ -159,6 +159,29 @@ function eceens_elementor_resolve_media_context( $source = 'auto' ) {
 }
 
 /**
+ * Shared control for FAQ/Content source selection.
+ */
+function eceens_elementor_add_source_control( $tag ) {
+    if ( ! is_object( $tag ) || ! method_exists( $tag, 'add_control' ) ) {
+        return;
+    }
+
+    $tag->add_control(
+        'eceens_source',
+        [
+            'label'   => 'Source',
+            'type'    => \Elementor\Controls_Manager::SELECT,
+            'default' => 'auto',
+            'options' => [
+                'auto'    => 'Auto (current post type)',
+                'faq'     => 'FAQ',
+                'content' => 'Content',
+            ],
+        ]
+    );
+}
+
+/**
  * Register Elementor Dynamic Tags for Eceens media fields.
  */
 function eceens_elementor_register_dynamic_tags( $dynamic_tags_manager ) {
@@ -188,19 +211,7 @@ function eceens_elementor_register_dynamic_tags( $dynamic_tags_manager ) {
             }
 
             protected function register_controls() {
-                $this->add_control(
-                    'eceens_source',
-                    [
-                        'label'   => 'Source',
-                        'type'    => \Elementor\Controls_Manager::SELECT,
-                        'default' => 'auto',
-                        'options' => [
-                            'auto'    => 'Auto (current post type)',
-                            'faq'     => 'FAQ',
-                            'content' => 'Content',
-                        ],
-                    ]
-                );
+                eceens_elementor_add_source_control( $this );
             }
 
             public function get_value( array $options = [] ) {
@@ -252,19 +263,7 @@ function eceens_elementor_register_dynamic_tags( $dynamic_tags_manager ) {
             }
 
             protected function register_controls() {
-                $this->add_control(
-                    'eceens_source',
-                    [
-                        'label'   => 'Source',
-                        'type'    => \Elementor\Controls_Manager::SELECT,
-                        'default' => 'auto',
-                        'options' => [
-                            'auto'    => 'Auto (current post type)',
-                            'faq'     => 'FAQ',
-                            'content' => 'Content',
-                        ],
-                    ]
-                );
+                eceens_elementor_add_source_control( $this );
             }
 
             public function render() {
@@ -286,6 +285,203 @@ function eceens_elementor_register_dynamic_tags( $dynamic_tags_manager ) {
         }
     }
 
+    if ( ! class_exists( 'Eceens_Elementor_Teaser_Tag' ) ) {
+        class Eceens_Elementor_Teaser_Tag extends \Elementor\Core\DynamicTags\Tag {
+            public function get_name() {
+                return 'eceens-teaser';
+            }
+
+            public function get_title() {
+                return 'Eceens Teaser';
+            }
+
+            public function get_group() {
+                return 'eceens';
+            }
+
+            public function get_categories() {
+                return [ \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY ];
+            }
+
+            protected function register_controls() {
+                eceens_elementor_add_source_control( $this );
+            }
+
+            public function render() {
+                $settings = $this->get_settings();
+                $source   = isset( $settings['eceens_source'] ) ? $settings['eceens_source'] : 'auto';
+                list( $prefix, $post_id ) = eceens_elementor_resolve_media_context( $source );
+                if ( ! $prefix || ! $post_id ) {
+                    return;
+                }
+
+                $value = get_post_meta( $post_id, "{$prefix}_teaser", true );
+                if ( $value === '' ) {
+                    return;
+                }
+
+                echo esc_html( $value );
+            }
+        }
+    }
+
+    if ( ! class_exists( 'Eceens_Elementor_Manual_Title_Tag' ) ) {
+        class Eceens_Elementor_Manual_Title_Tag extends \Elementor\Core\DynamicTags\Tag {
+            public function get_name() {
+                return 'eceens-manual-title';
+            }
+
+            public function get_title() {
+                return 'Eceens Manual Title';
+            }
+
+            public function get_group() {
+                return 'eceens';
+            }
+
+            public function get_categories() {
+                return [ \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY ];
+            }
+
+            protected function register_controls() {
+                eceens_elementor_add_source_control( $this );
+            }
+
+            public function render() {
+                $settings = $this->get_settings();
+                $source   = isset( $settings['eceens_source'] ) ? $settings['eceens_source'] : 'auto';
+                list( $prefix, $post_id ) = eceens_elementor_resolve_media_context( $source );
+                if ( ! $prefix || ! $post_id ) {
+                    return;
+                }
+
+                $value = get_post_meta( $post_id, "{$prefix}_manual_title", true );
+                if ( $value === '' ) {
+                    return;
+                }
+
+                echo esc_html( $value );
+            }
+        }
+    }
+
+    if ( ! class_exists( 'Eceens_Elementor_Priority_Tag' ) ) {
+        class Eceens_Elementor_Priority_Tag extends \Elementor\Core\DynamicTags\Tag {
+            public function get_name() {
+                return 'eceens-priority';
+            }
+
+            public function get_title() {
+                return 'Eceens Priority';
+            }
+
+            public function get_group() {
+                return 'eceens';
+            }
+
+            public function get_categories() {
+                return [ \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY ];
+            }
+
+            protected function register_controls() {
+                eceens_elementor_add_source_control( $this );
+            }
+
+            public function render() {
+                $settings = $this->get_settings();
+                $source   = isset( $settings['eceens_source'] ) ? $settings['eceens_source'] : 'auto';
+                list( $prefix, $post_id ) = eceens_elementor_resolve_media_context( $source );
+                if ( ! $prefix || ! $post_id ) {
+                    return;
+                }
+
+                $value = get_post_meta( $post_id, "{$prefix}_priority", true );
+                if ( $value === '' ) {
+                    return;
+                }
+
+                echo esc_html( $value );
+            }
+        }
+    }
+
+    if ( ! class_exists( 'Eceens_Elementor_Featured_Tag' ) ) {
+        class Eceens_Elementor_Featured_Tag extends \Elementor\Core\DynamicTags\Tag {
+            public function get_name() {
+                return 'eceens-featured';
+            }
+
+            public function get_title() {
+                return 'Eceens Featured';
+            }
+
+            public function get_group() {
+                return 'eceens';
+            }
+
+            public function get_categories() {
+                return [ \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY ];
+            }
+
+            protected function register_controls() {
+                eceens_elementor_add_source_control( $this );
+            }
+
+            public function render() {
+                $settings = $this->get_settings();
+                $source   = isset( $settings['eceens_source'] ) ? $settings['eceens_source'] : 'auto';
+                list( $prefix, $post_id ) = eceens_elementor_resolve_media_context( $source );
+                if ( ! $prefix || ! $post_id ) {
+                    return;
+                }
+
+                $value = get_post_meta( $post_id, "{$prefix}_featured", true ) === '1' ? 'Ja' : 'Nee';
+                echo esc_html( $value );
+            }
+        }
+    }
+
+    if ( ! class_exists( 'Eceens_Elementor_Homepage_Featured_Tag' ) ) {
+        class Eceens_Elementor_Homepage_Featured_Tag extends \Elementor\Core\DynamicTags\Tag {
+            public function get_name() {
+                return 'eceens-homepage-featured';
+            }
+
+            public function get_title() {
+                return 'Eceens Homepage Featured';
+            }
+
+            public function get_group() {
+                return 'eceens';
+            }
+
+            public function get_categories() {
+                return [ \Elementor\Modules\DynamicTags\Module::TEXT_CATEGORY ];
+            }
+
+            protected function register_controls() {
+                eceens_elementor_add_source_control( $this );
+            }
+
+            public function render() {
+                $settings = $this->get_settings();
+                $source   = isset( $settings['eceens_source'] ) ? $settings['eceens_source'] : 'auto';
+                list( $prefix, $post_id ) = eceens_elementor_resolve_media_context( $source );
+                if ( ! $prefix || ! $post_id ) {
+                    return;
+                }
+
+                $value = get_post_meta( $post_id, "{$prefix}_homepage_featured", true ) === '1' ? 'Ja' : 'Nee';
+                echo esc_html( $value );
+            }
+        }
+    }
+
     $dynamic_tags_manager->register( new \Eceens_Elementor_Media_Image_Tag() );
     $dynamic_tags_manager->register( new \Eceens_Elementor_Media_Video_Url_Tag() );
+    $dynamic_tags_manager->register( new \Eceens_Elementor_Teaser_Tag() );
+    $dynamic_tags_manager->register( new \Eceens_Elementor_Manual_Title_Tag() );
+    $dynamic_tags_manager->register( new \Eceens_Elementor_Priority_Tag() );
+    $dynamic_tags_manager->register( new \Eceens_Elementor_Featured_Tag() );
+    $dynamic_tags_manager->register( new \Eceens_Elementor_Homepage_Featured_Tag() );
 }

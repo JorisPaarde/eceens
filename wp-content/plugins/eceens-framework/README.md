@@ -2,7 +2,22 @@
 
 Plugin voor het beheren van FAQ's en Content op de Eceens website.
 
-**Versie:** 1.6.9
+**Versie:** 1.7.1
+
+---
+
+## Plugin zip bouwen (belangrijk)
+
+Gebruik voor releases altijd het build-script. Dit voorkomt kapotte zip-paden met `\` in bestandsnamen.
+
+```powershell
+cd "C:\Users\Gebruiker\Local Sites\eceens\app\public\wp-content\plugins\eceens-framework"
+powershell -ExecutionPolicy Bypass -File ".\scripts\build-plugin-zip.ps1" -OutputDir "C:\Users\Gebruiker\OneDrive\Documents\1_JPWebCreation\Lopende klanten\ecEeens\plugin" -AlsoCanonicalZip
+```
+
+Output:
+- `eceens-framework-<versie>.zip` (archief)
+- `eceens-framework.zip` (install/update)
 
 ---
 
@@ -77,12 +92,17 @@ De "current category" Query IDs lezen automatisch de categorie uit de URL. Gebru
 
 ---
 
-## Elementor Dynamic Tags (Media)
+## Elementor Dynamic Tags (Media + Velden)
 
 In Elementor kun je nu onder **Dynamic Tags > Eceens** direct deze tags kiezen:
 
 - `Eceens Media Image` (voor Image widget)
 - `Eceens Media Video URL` (voor Video widget of URL-veld)
+- `Eceens Teaser`
+- `Eceens Manual Title`
+- `Eceens Priority`
+- `Eceens Featured` (`Ja` / `Nee`)
+- `Eceens Homepage Featured` (`Ja` / `Nee`)
 
 Elke tag heeft een **Source** optie:
 
@@ -94,6 +114,11 @@ Deze lezen de metabox-velden:
 
 - `faq_media_image_id` / `faq_media_video_url`
 - `content_media_image_id` / `content_media_video_url`
+- `faq_teaser` / `content_teaser`
+- `faq_manual_title` / `content_manual_title`
+- `faq_priority` / `content_priority`
+- `faq_featured` / `content_featured`
+- `faq_homepage_featured` / `content_homepage_featured`
 
 ---
 

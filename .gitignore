@@ -41,6 +41,7 @@ wp-config-sample.php
 /wp-content/plugins/*
 # Track our custom plugin
 !/wp-content/plugins/eceens-framework/
+/wp-content/plugins/eceens-framework/scripts/
 
 # --- Third-party themes ---
 /wp-content/themes/*

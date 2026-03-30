@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Eceens Framework
  * Description: Custom Post Types, taxonomies, meta boxes, sorting, Elementor helpers and shortcodes for Eceens.
- * Version:     1.6.9
+ * Version:     1.7.1
  * Author:      Eceens
  * Text Domain: eceens-framework
  * Requires at least: 6.0
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'ECEENS_FW_VERSION', '1.6.9' );
+define( 'ECEENS_FW_VERSION', '1.7.1' );
 define( 'ECEENS_FW_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ECEENS_FW_URL', plugin_dir_url( __FILE__ ) );
 
@@ -24,6 +24,7 @@ require_once ECEENS_FW_PATH . 'includes/sorting.php';
 require_once ECEENS_FW_PATH . 'includes/elementor.php';
 require_once ECEENS_FW_PATH . 'includes/shortcodes.php';
 require_once ECEENS_FW_PATH . 'includes/display-title-shortcode.php';
+require_once ECEENS_FW_PATH . 'includes/title-override.php';
 
 /* --- Front-end styles --- */
 
