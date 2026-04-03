@@ -13,6 +13,7 @@ add_action( 'manage_faq_posts_custom_column', 'eceens_render_homepage_featured_c
 add_action( 'manage_content_posts_custom_column', 'eceens_render_homepage_featured_column', 10, 2 );
 add_action( 'admin_footer-edit.php', 'eceens_render_list_toggle_script' );
 add_action( 'wp_ajax_eceens_toggle_homepage_featured', 'eceens_ajax_toggle_homepage_featured' );
+add_action( 'admin_init', 'eceens_maybe_backfill_priority_meta', 20 );
 
 function eceens_metabox_admin_scripts( $hook ) {
     if ( ! in_array( $hook, [ 'post.php', 'post-new.php' ], true ) ) {
@@ -199,7 +200,14 @@ function eceens_save_meta( $post_id, $post, $prefix ) {
                 $value = sanitize_text_field( $raw );
                 break;
             case 'int':
-                $value = $raw !== '' ? absint( $raw ) : '';
+                if ( $raw !== '' ) {
+                    $value = absint( $raw );
+                } elseif ( $key === "{$prefix}_priority" ) {
+                    // Keep meta so WP_Query with meta_key + orderby does not exclude the post.
+                    $value = (int) ECEENS_PRIORITY_DEFAULT;
+                } else {
+                    $value = '';
+                }
                 break;
             case 'url':
                 $value = esc_url_raw( $raw );
@@ -217,6 +225,39 @@ function eceens_save_meta( $post_id, $post, $prefix ) {
             delete_post_meta( $post_id, $key );
         }
     }
+}
+
+/**
+ * One-time backfill: posts missing *_priority meta (older saves deleted it when empty).
+ */
+function eceens_maybe_backfill_priority_meta() {
+    if ( get_option( 'eceens_priority_backfill_v1' ) ) {
+        return;
+    }
+    if ( ! current_user_can( 'manage_options' ) ) {
+        return;
+    }
+
+    global $wpdb;
+    $default = (string) ECEENS_PRIORITY_DEFAULT;
+
+    foreach ( [ 'faq' => 'faq_priority', 'content' => 'content_priority' ] as $post_type => $meta_key ) {
+        $wpdb->query(
+            $wpdb->prepare(
+                "INSERT INTO {$wpdb->postmeta} (post_id, meta_key, meta_value)
+                SELECT p.ID, %s, %s
+                FROM {$wpdb->posts} p
+                LEFT JOIN {$wpdb->postmeta} pm ON p.ID = pm.post_id AND pm.meta_key = %s
+                WHERE p.post_type = %s AND p.post_status NOT IN ('trash', 'auto-draft') AND pm.meta_id IS NULL",
+                $meta_key,
+                $default,
+                $meta_key,
+                $post_type
+            )
+        );
+    }
+
+    update_option( 'eceens_priority_backfill_v1', '1' );
 }
 
 /* ── Save hooks ──────────────────────────────────────────── */

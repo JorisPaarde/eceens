@@ -2,7 +2,7 @@
 
 Plugin voor het beheren van FAQ's en Content op de Eceens website.
 
-**Versie:** 1.7.1
+**Versie:** 1.7.2
 
 ---
 
@@ -44,7 +44,7 @@ Output:
 | Teaser             | Korte samenvatting voor cards                        |
 | Featured           | Aanvinken = verschijnt in featured blokken           |
 | Homepage Featured  | Aanvinken = verschijnt op de homepage                |
-| Prioriteit         | Lager nummer = eerder getoond (1 komt voor 10)       |
+| Prioriteit         | Lager nummer = eerder getoond (1 komt voor 10). Leeg = standaard `999999` (onderaan). Bij gelijke prioriteit: nieuwste eerst. |
 | Handmatige titel   | Alternatieve titel voor weergave                     |
 | Media Afbeelding   | Extra afbeelding (naast de uitgelichte afbeelding)   |
 | Media Video URL    | Link naar een video                                  |
@@ -67,7 +67,7 @@ Bij het bewerken van een FAQ Categorie vind je een **kleurkiezer**. Deze kleur w
 FAQ's en Content worden automatisch gesorteerd op:
 
 1. **Prioriteit** (laag naar hoog)
-2. **Datum** (nieuwst eerst)
+2. **Datum** (nieuwst eerst) — bij dezelfde prioriteit wint het nieuwste bericht
 
 Dit geldt voor archiefpagina's en categorie-pagina's.
 
