@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Eceens Framework
  * Description: Custom Post Types, taxonomies, meta boxes, sorting, Elementor helpers and shortcodes for Eceens.
- * Version:     1.7.2
+ * Version:     1.7.3
  * Author:      Eceens
  * Text Domain: eceens-framework
  * Requires at least: 6.0
@@ -13,7 +13,7 @@ if ( ! defined( 'ABSPATH' ) ) {
     exit;
 }
 
-define( 'ECEENS_FW_VERSION', '1.7.2' );
+define( 'ECEENS_FW_VERSION', '1.7.3' );
 /** Default priority when the field is left empty (sorts after lower numbers). */
 define( 'ECEENS_PRIORITY_DEFAULT', 999999 );
 define( 'ECEENS_FW_PATH', plugin_dir_path( __FILE__ ) );

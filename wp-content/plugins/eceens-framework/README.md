@@ -2,7 +2,7 @@
 
 Plugin voor het beheren van FAQ's en Content op de Eceens website.
 
-**Versie:** 1.7.2
+**Versie:** 1.7.3
 
 ---
 
@@ -77,16 +77,16 @@ Dit geldt voor archiefpagina's en categorie-pagina's.
 
 Gebruik deze in een **Loop Grid** widget onder Query > Query ID.
 
-| Query ID                           | Toont                        | Max items |
-|------------------------------------|------------------------------|-----------|
-| `eceens_faq_featured`              | Featured FAQ's               | 6         |
-| `eceens_content_featured`          | Featured Content             | 6         |
-| `eceens_homepage_faq_featured`     | Featured FAQ's (homepage)    | 3         |
-| `eceens_homepage_content_featured` | Featured Content (homepage)  | 3         |
-| `eceens_faq_current_category`      | FAQ's van huidige categorie  | alle      |
-| `eceens_content_current_category`  | Content van huidige categorie| alle      |
+| Query ID                           | Toont                        | Aantal items |
+|------------------------------------|------------------------------|--------------|
+| `eceens_faq_featured`              | Featured FAQ's               | Loop Grid (Elementor) |
+| `eceens_content_featured`          | Featured Content             | Loop Grid (Elementor) |
+| `eceens_homepage_faq_featured`     | Featured FAQ's (homepage)    | Loop Grid (Elementor) |
+| `eceens_homepage_content_featured` | Featured Content (homepage)  | Loop Grid (Elementor) |
+| `eceens_faq_current_category`      | FAQ's van huidige categorie  | Loop Grid (Elementor) |
+| `eceens_content_current_category`  | Content van huidige categorie| Loop Grid (Elementor) |
 
-Featured Query IDs tonen alleen items met het **Featured** veld aangevinkt, gesorteerd op prioriteit.
+Featured Query IDs tonen alleen items met het **Featured** veld aangevinkt, gesorteerd op prioriteit. Het **aantal items per pagina** komt uit je **Loop Grid** (Elementor); de plugin zet dat niet meer vast in code.
 
 De "current category" Query IDs lezen automatisch de categorie uit de URL. Gebruik deze op taxonomy archive templates.
 

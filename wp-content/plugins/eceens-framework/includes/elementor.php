@@ -13,7 +13,6 @@ add_action( 'elementor/dynamic_tags/register', 'eceens_elementor_register_dynami
 
 function eceens_elementor_faq_featured( $query ) {
     $query->set( 'post_type', 'faq' );
-    $query->set( 'posts_per_page', 6 );
     $query->set( 'meta_query', [
         [
             'key'   => 'faq_featured',
@@ -29,7 +28,6 @@ function eceens_elementor_faq_featured( $query ) {
 
 function eceens_elementor_content_featured( $query ) {
     $query->set( 'post_type', 'content' );
-    $query->set( 'posts_per_page', 6 );
     $query->set( 'meta_query', [
         [
             'key'   => 'content_featured',
@@ -45,7 +43,6 @@ function eceens_elementor_content_featured( $query ) {
 
 function eceens_elementor_homepage_faq_featured( $query ) {
     $query->set( 'post_type', 'faq' );
-    $query->set( 'posts_per_page', 3 );
     $query->set( 'meta_query', [
         [
             'key'   => 'faq_homepage_featured',
@@ -61,7 +58,6 @@ function eceens_elementor_homepage_faq_featured( $query ) {
 
 function eceens_elementor_homepage_content_featured( $query ) {
     $query->set( 'post_type', 'content' );
-    $query->set( 'posts_per_page', 3 );
     $query->set( 'meta_query', [
         [
             'key'   => 'content_homepage_featured',
