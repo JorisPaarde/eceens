@@ -2,7 +2,7 @@
 
 Plugin voor het beheren van FAQ's en Content op de Eceens website.
 
-**Versie:** 1.7.3
+**Versie:** 1.7.4
 
 ---
 

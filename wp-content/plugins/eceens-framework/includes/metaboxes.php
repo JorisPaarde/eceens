@@ -72,15 +72,22 @@ function eceens_render_meta_fields( $post, $prefix ) {
         </tr>
         <tr>
             <th><label for="<?php echo esc_attr( $prefix ); ?>_featured">Featured</label></th>
-            <td><input type="checkbox" id="<?php echo esc_attr( $prefix ); ?>_featured"
+            <td>
+                <?php /* Hidden ensures unchecked state is posted; list-view AJAX otherwise gets wiped on save. */ ?>
+                <input type="hidden" name="<?php echo esc_attr( $prefix ); ?>_featured" value="0" />
+                <input type="checkbox" id="<?php echo esc_attr( $prefix ); ?>_featured"
                        name="<?php echo esc_attr( $prefix ); ?>_featured"
-                       value="1" <?php checked( $featured, '1' ); ?> /></td>
+                       value="1" <?php checked( $featured, '1' ); ?> />
+            </td>
         </tr>
         <tr>
             <th><label for="<?php echo esc_attr( $prefix ); ?>_homepage_featured">Homepage Featured</label></th>
-            <td><input type="checkbox" id="<?php echo esc_attr( $prefix ); ?>_homepage_featured"
+            <td>
+                <input type="hidden" name="<?php echo esc_attr( $prefix ); ?>_homepage_featured" value="0" />
+                <input type="checkbox" id="<?php echo esc_attr( $prefix ); ?>_homepage_featured"
                        name="<?php echo esc_attr( $prefix ); ?>_homepage_featured"
-                       value="1" <?php checked( $homepage_featured, '1' ); ?> /></td>
+                       value="1" <?php checked( $homepage_featured, '1' ); ?> />
+            </td>
         </tr>
         <tr>
             <th><label for="<?php echo esc_attr( $prefix ); ?>_priority">Prioriteit</label></th>
@@ -213,7 +220,8 @@ function eceens_save_meta( $post_id, $post, $prefix ) {
                 $value = esc_url_raw( $raw );
                 break;
             case 'checkbox':
-                $value = $raw === '1' ? '1' : '';
+                // Accept "1" from checkbox; "0" from companion hidden when unchecked.
+                $value = ( $raw === '1' || $raw === 1 ) ? '1' : '';
                 break;
             default:
                 $value = sanitize_text_field( $raw );
@@ -325,8 +333,8 @@ function eceens_render_list_toggle_script() {
             $.post(ajaxurl, {
                 action: 'eceens_toggle_homepage_featured',
                 nonce: '<?php echo esc_js( $nonce ); ?>',
-                post_id: $el.data('post-id'),
-                prefix: $el.data('prefix'),
+                post_id: $el.attr('data-post-id'),
+                prefix: $el.attr('data-prefix'),
                 value: $el.is(':checked') ? '1' : ''
             }).done(function(resp){
                 if(!resp || !resp.success){
